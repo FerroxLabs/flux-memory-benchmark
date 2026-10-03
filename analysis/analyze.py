@@ -20,7 +20,7 @@ ARMS = ['flux_public', 'flux_evidence', 'mem0', 'letta', 'honcho_retrieval', 'ho
 INGEST_FROM = {'honcho_chat': 'honcho_retrieval'}
 DROP_LIMIT = 0.02
 HONCHO_LIMIT, HONCHO_AFTER = 0.15, 10
-CAP = 40.0
+CAP = 55.0  # LongMemEval and LoCoMo together
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -38,7 +38,7 @@ def wilson(k, n, z=1.96):
     d = 1 + z * z / n
     c = p + z * z / (2 * n)
     h = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))
-    return (round((c - h) / d, 3), round((c + h) / d, 3))
+    return (round(max(0.0, (c - h) / d), 3), round(min(1.0, (c + h) / d), 3))
 
 
 def mcnemar_exact(a, b, qids):
@@ -69,9 +69,9 @@ def paired_bootstrap(diffs, n=10000, seed=0):
     return round(means[int(0.025 * n)], 4), round(means[int(0.975 * n) - 1], 4)
 
 
-def prompt_sha():
+def prompt_sha(bench='lme'):
     h = hashlib.sha256()
-    for n in ('lme_prompts.py', 'judges.json'):
+    for n in (('lme_prompts.py', 'judges.json') if bench == 'lme' else ('locomo_prompts.py', 'judges.json')):
         with open(os.path.join(ROOT, 'prompts', n), 'rb') as f:
             h.update(f.read())
     return h.hexdigest()
@@ -121,16 +121,19 @@ def ops(results, arm):
             'empty_retrieval_share': round(empty / len(rows), 3) if rows else None, 'usd_first10': usd[:HONCHO_AFTER]}
 
 
-def analyse(results, ids_path, baseline='flux_public', bootstrap_n=10000):
-    with open(ids_path) as f:
-        qids = f.read().split()
+def analyse(results, ids_path, baseline='flux_public', bootstrap_n=10000, qids=None, bench='lme', ledger=None):
+    """qids: analyse this subset of ids instead of reading ids_path (used for LoCoMo, which splits by category)."""
+    if qids is None:
+        with open(ids_path) as f:
+            qids = f.read().split()
     arms = {a: load_arm(results, a, qids) for a in ARMS if os.path.isdir(os.path.join(results, a))}
     types = {}
     for a in arms.values():
         types.update({q: t for q, t in a['types'].items() if t})
-    tlist = sorted(set(types.values()))
+    qset = set(qids)
+    tlist = sorted({t for q, t in types.items() if q in qset})  # only the types of the ids analysed (LoCoMo splits category 5 off)
     out = {'n': len(qids), 'baseline': baseline, 'types': tlist, 'arms': {}, 'comparisons': {}, 'ops': {}, 'flags': []}
-    psha = prompt_sha()
+    psha = prompt_sha(bench)
     for name, a in arms.items():
         k = sum(a['label'].values())
         entry = {'complete': a['complete'], 'answered': a['answered'], 'errors': a['errors']}
@@ -167,10 +170,12 @@ def analyse(results, ids_path, baseline='flux_public', bootstrap_n=10000):
             out['flags'].append(f'{name}: {pct(o["drop_rate"])}% of ingest items dropped or failed (> {pct(DROP_LIMIT)}%): stop rule, fix the setup and restart this arm from a clean store')
         if name.startswith('honcho') and len(o['usd_first10']) >= HONCHO_AFTER and sum(o['usd_first10']) / HONCHO_AFTER > HONCHO_LIMIT:
             out['flags'].append(f'{name}: Honcho ingest averaged over ${HONCHO_LIMIT}/haystack across the first {HONCHO_AFTER}: stop rule, pause and find out why')
-    spend = {}
-    for r in read_jsonl(os.path.join(results, 'ledger.jsonl')):
+    spend, bench_spend = {}, {}
+    for r in read_jsonl(ledger or os.path.join(results, 'ledger.jsonl')):
         spend[r['arm']] = spend.get(r['arm'], 0) + r['usd']
-    out['spend'] = {'by_arm': {k: round(v, 4) for k, v in spend.items()}, 'total': round(sum(spend.values()), 4), 'cap': CAP}
+        bench_spend[r.get('bench', 'lme')] = bench_spend.get(r.get('bench', 'lme'), 0) + r['usd']
+    out['spend'] = {'by_arm': {k: round(v, 4) for k, v in spend.items()}, 'by_bench': {k: round(v, 4) for k, v in bench_spend.items()},
+                    'total': round(sum(spend.values()), 4), 'cap': CAP}
     if sum(spend.values()) > CAP:
         out['flags'].append(f'spend {sum(spend.values()):.2f} is over the ${CAP:g} cap')
     return out

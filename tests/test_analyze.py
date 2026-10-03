@@ -122,9 +122,9 @@ class Tables(unittest.TestCase):
     def test_spend_flag(self):
         ids, types, root = self.ids, self.types, self.root
         write_arm(root, 'flux_public', {q: 1 for q in ids}, types)
-        open(os.path.join(root, 'ledger.jsonl'), 'w').write(json.dumps({'arm': 'mem0', 'usd': 41.0}) + '\n')
+        open(os.path.join(root, 'ledger.jsonl'), 'w').write(json.dumps({'arm': 'mem0', 'usd': 56.0}) + '\n')
         res = analyze.analyse(root, self.ids_path)
-        self.assertEqual(res['spend']['total'], 41.0); self.assertTrue(any('over the $40 cap' in f for f in res['flags']))
+        self.assertEqual(res['spend']['total'], 56.0); self.assertTrue(any('over the $55 cap' in f for f in res['flags']))
 
 
 class Sample(unittest.TestCase):

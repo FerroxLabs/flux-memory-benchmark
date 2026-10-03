@@ -2,7 +2,7 @@
 # Inside the container: the local embedder (:18811), the metering proxy to DeepSeek (:18800, per-haystack cost at /stats?tag=mem0__<unit>), then the driver.
 #   export DEEPSEEK_API_KEY=...   (never commit it)
 #   docker compose -f compose/mem0/docker-compose.yml up -d --build
-#   docker compose -f compose/mem0/docker-compose.yml exec mem0 python drivers/mem0.py --units /work/units_n100.jsonl --out /results/mem0 --procs 8
+#   docker compose -f compose/mem0/docker-compose.yml exec mem0 python drivers/mem0_driver.py --units /work/units_n100.jsonl --out /results/mem0 --procs 8
 #   docker compose -f compose/mem0/docker-compose.yml down
 services:
   mem0:
@@ -23,3 +23,8 @@ services:
              sleep infinity"
 volumes:
   fastembed-cache:
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: ${LANE_SUBNET:-10.77.0.0/24}   # an explicit subnet: a host whose Docker address pools are used up cannot create a default network

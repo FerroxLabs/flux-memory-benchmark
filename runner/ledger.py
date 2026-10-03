@@ -8,7 +8,7 @@
 import argparse, json, os, sys, time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-LEDGER = os.path.join(ROOT, 'results', 'ledger.jsonl')
+LEDGER = os.environ.get('LEDGER_PATH') or os.path.join(ROOT, 'results', 'ledger.jsonl')  # LEDGER_PATH: inside containers /repo is read-only
 CAP = 40.0
 HONCHO_PER_HAYSTACK_LIMIT = 0.15
 HONCHO_AFTER = 10

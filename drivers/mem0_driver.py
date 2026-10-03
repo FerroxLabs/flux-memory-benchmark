@@ -10,7 +10,7 @@ Config from the environment:
   DSPROXY_STATS        default http://127.0.0.1:18800/stats   (per-unit cost = /stats?tag=mem0__<unit>)
   MEM0_TMP             scratch dir for stores (default /tmp/mem0-h2h)
 A failed add() is retried once and then counted as dropped (never silent).
-usage: mem0.py --units work/units_n100.jsonl --out results/mem0 [--procs 8] [--only ids]
+usage: mem0_driver.py --units work/units_n100.jsonl --out results/mem0 [--procs 8] [--only ids]
 """
 import argparse, json, os, shutil, sys, tempfile, time, urllib.request
 os.environ['MEM0_TELEMETRY'] = 'False'  # telemetry opens a shared ~/.mem0 dir (lock clash across units)

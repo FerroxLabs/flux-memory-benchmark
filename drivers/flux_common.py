@@ -70,7 +70,7 @@ def one(u):
     qs = [q for q in u['questions'] if QIDS is None or q['qid'] in QIDS]
     if not qs:
         return {'unit_id': u['unit_id'], 'ingest': {'skipped': True}, 'rows': []}
-    store = MemoryStore(None, None, hybrid=SimpleNamespace(label='hybrid'))
+    store = MemoryStore(None, None, hybrid=SimpleNamespace(recall_label=lambda: 'hybrid'))
     recs, by_id, fitems = [], {}, []
     for si, s in enumerate(u['sessions']):
         for ti, t in enumerate(s['turns']):

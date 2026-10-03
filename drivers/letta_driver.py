@@ -8,7 +8,7 @@ Config from the environment:
   LETTA_LLM_URL   OpenAI-compatible URL of the $0-capped proxy (default http://127.0.0.1:18801/letta/v1)
   EMBED_URLS      local bge-small endpoints (default http://127.0.0.1:18811/v1)
 Failed passage inserts are retried twice and then counted as dropped (never silent). Known: Letta rejects a turn above its 8,192-token embedding limit.
-usage: letta.py --units work/units_n100.jsonl --out results/letta [--procs 8] [--only ids]
+usage: letta_driver.py --units work/units_n100.jsonl --out results/letta [--procs 8] [--only ids]
 """
 import argparse, os, sys, time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

@@ -2,7 +2,7 @@
 # agent's LLM is started with a $0 cap so any LLM call would fail loudly. Embeddings come from the local bge-small endpoint inside the letta container.
 #   export DEEPSEEK_API_KEY=...   (only used to start the proxy; the $0 cap means it is never spent)
 #   docker compose -f compose/letta/docker-compose.yml up -d --build
-#   docker compose -f compose/letta/docker-compose.yml exec letta python drivers/letta.py --units /work/units_n100.jsonl --out /results/letta --procs 8
+#   docker compose -f compose/letta/docker-compose.yml exec letta python drivers/letta_driver.py --units /work/units_n100.jsonl --out /results/letta --procs 8
 services:
   pg:
     image: pgvector/pgvector:pg17@sha256:ac08538c6f8b9904c33c8224c5e5706dbe760aca29db1d096972b4052c22a75d
@@ -36,3 +36,8 @@ services:
              letta server --host 127.0.0.1 --port 8283"
 volumes:
   fastembed-cache:
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: ${LANE_SUBNET:-10.77.0.0/24}   # an explicit subnet: a host whose Docker address pools are used up cannot create a default network

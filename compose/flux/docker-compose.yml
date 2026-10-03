@@ -1,0 +1,26 @@
+# Flux Memory arms (flux_public, flux_evidence, fact extraction): one container, the product's own retrieval modules in-process (no HTTP, no Postgres).
+# FLUX_SRC_DIR is a directory holding src/__init__.py and src/flux_memory/ of the build under test (git archive of the pinned commit; no GitHub needed).
+#   export DEEPSEEK_API_KEY=...   (only fact extraction calls a model)
+#   FLUX_SRC_DIR=/path/to/flux-src docker compose -f compose/flux/docker-compose.yml up -d --build
+#   docker compose -f compose/flux/docker-compose.yml exec flux python drivers/flux_public.py --units /work/units_n100.jsonl --out /results/flux_public
+#   (the embedding and reranker models are downloaded from Hugging Face on first use into the hf-cache volume)
+services:
+  flux:
+    build: .
+    environment:
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      LEDGER_PATH: /results/ledger.jsonl
+    volumes:
+      - ../../:/repo:ro
+      - ../../work:/work
+      - ../../results:/results
+      - ${FLUX_SRC_DIR:?set FLUX_SRC_DIR}:/flux-src:ro
+      - hf-cache:/cache/hf
+    command: sleep infinity
+volumes:
+  hf-cache:
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: ${LANE_SUBNET:-10.77.0.0/24}   # an explicit subnet: a host whose Docker address pools are used up cannot create a default network

@@ -36,3 +36,8 @@ services:
     command: ["sh", "/stack.sh"]
 volumes:
   fastembed-cache:
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: ${LANE_SUBNET:-10.77.0.0/24}   # an explicit subnet: a host whose Docker address pools are used up cannot create a default network

@@ -253,11 +253,13 @@ class TestCostTable(unittest.TestCase):
         self.assertEqual(cost_table.price_cell(p, 'b'), 'TODO'); self.assertEqual(cost_table.price_cell(p, 'missing'), 'TODO')
         self.assertEqual(cost_table.price_cell(p, 'c'), '$0/month')
 
-    def test_shipped_prices_json_is_todo(self):
-        pr = json.load(open(os.path.join(ROOT, 'analysis', 'prices.json')))
-        for arm in ('flux_public', 'mem0', 'letta', 'honcho_retrieval'):
-            e = pr['systems'][arm]
-            self.assertIsNone(e['list_price_usd_per_month']); self.assertIsNone(e['url']); self.assertIsNone(e['date']); self.assertIn('TODO', e['todo'])
+    def test_shipped_prices_json_is_sourced(self):
+        pr = json.load(open(os.path.join(ROOT, 'analysis', 'prices.json')))['systems']
+        for arm in ('flux_public', 'flux_evidence'):
+            self.assertIsNone(pr[arm]['list_price_usd_per_month']); self.assertEqual(pr[arm]['notes'], 'pricing not announced')
+        for arm in ('mem0', 'letta', 'honcho_retrieval', 'honcho_chat', 'zep', 'supermemory'):
+            e = pr[arm]
+            self.assertTrue(e['url']); self.assertEqual(e['date'], '2026-10-03'); self.assertTrue(e['plans']); self.assertTrue(e['notes'])
 
 
 class TestLedgerAndEstimate(unittest.TestCase):

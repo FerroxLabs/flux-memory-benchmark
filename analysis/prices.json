@@ -1,13 +1,91 @@
 {
   "_note": "Hand-edited. One entry per arm: the vendor's published list price for the hosted product, read from the vendor's own pricing page on the date given. Leave a value null until someone has read the page; the cost table prints TODO for null. Do not guess. Self-hosted open-source arms (mem0 OSS, Letta, Honcho self-hosted) have no list price for what we ran; record the hosted equivalent if you want one in the table.",
   "systems": {
-    "flux_public":      {"product": "Flux Memory",        "list_price_usd_per_month": null, "unit": null, "url": null, "date": null, "todo": "TODO: read from the Flux pricing page"},
-    "flux_evidence":    {"product": "Flux Memory",        "list_price_usd_per_month": null, "unit": null, "url": null, "date": null, "todo": "TODO: same product as flux_public"},
-    "mem0":             {"product": "Mem0 platform",      "list_price_usd_per_month": null, "unit": null, "url": null, "date": null, "todo": "TODO: read from the mem0 pricing page"},
-    "letta":            {"product": "Letta Cloud",        "list_price_usd_per_month": null, "unit": null, "url": null, "date": null, "todo": "TODO: read from the Letta pricing page"},
-    "honcho_retrieval": {"product": "Honcho (hosted)",    "list_price_usd_per_month": null, "unit": null, "url": null, "date": null, "todo": "TODO: read from the Honcho pricing page"},
-    "honcho_chat":      {"product": "Honcho (hosted)",    "list_price_usd_per_month": null, "unit": null, "url": null, "date": null, "todo": "TODO: same product as honcho_retrieval"},
-    "closed_book":      {"product": "none (no memory)",   "list_price_usd_per_month": 0,    "unit": "n/a", "url": null, "date": null, "todo": null},
-    "full_context":     {"product": "none (reader only)", "list_price_usd_per_month": 0,    "unit": "n/a", "url": null, "date": null, "todo": null}
+    "flux_public": {
+      "product": "Flux Memory",
+      "list_price_usd_per_month": null,
+      "unit": null,
+      "url": null,
+      "date": null,
+      "notes": "pricing not announced"
+    },
+    "flux_evidence": {
+      "product": "Flux Memory",
+      "list_price_usd_per_month": null,
+      "unit": null,
+      "url": null,
+      "date": null,
+      "notes": "pricing not announced"
+    },
+    "mem0": {
+      "product": "Mem0 platform",
+      "list_price_usd_per_month": 0.38,
+      "unit": "active user (Starter plan share)",
+      "url": "https://mem0.ai/pricing",
+      "date": "2026-10-03",
+      "plans": "Hobby free: 10,000 add + 1,000 retrieval req/mo, 1 project. Starter $19/mo: 50,000 add + 5,000 retrieval/mo, 1 project. Pro $249/mo: 500,000 add + 50,000 retrieval/mo, unlimited projects, private Slack. Enterprise: custom, unlimited, on-prem. Overage: not stated on page (usage-based pricing on inquiry).",
+      "notes": "Profile = 600 adds + 100 retrievals per user-month. Starter: adds allow 50000/600=83 users, retrievals allow 5000/100=50 users, so 50 users per plan: $19/50 = $0.38 per user-month (binding limit is retrievals). Pro: 500000/600=833, 50000/100=500 users: $249/500=$0.50. Assumes one add request per turn and plan fully packed with identical users; a fee share, not a per-user charge. Free Hobby covers 1,000/100 = 10 users by retrieval. Mem0's own metering of an add (one request may cover several messages) is not stated on the page."
+    },
+    "letta": {
+      "product": "Letta Cloud",
+      "list_price_usd_per_month": null,
+      "unit": null,
+      "url": "https://docs.letta.com/letta-code/pricing (letta.com/pricing 301-redirects here)",
+      "date": "2026-10-03",
+      "plans": "Free $0: limited agents, limited Letta Auto usage, BYOK. Pro $20/mo: up to 20 stateful agents, pay-as-you-go overage. API plan $20/mo base: unlimited agents, $0.10 per active agent per month, $0.00015 per second of tool execution, LLM usage pay-as-you-go. Teams Pro $20/seat/mo. Enterprise: contact sales, volume-based.",
+      "notes": "Letta meters agents, tool-seconds and LLM tokens, not memory operations, so the 600-turn/100-recall profile does not map to a price. Floor if each user is one agent on the API plan: $0.10/user-month agent fee + share of $20 base + LLM at provider rates (not stated as a list price); LLM share not computable, so left null. Older docs pages (docs.letta.com/guides/cloud/plans) show a different credits model (Pro $20 = 20,000 credits, Scale $750); the letta.com/pricing redirect target was used."
+    },
+    "honcho_retrieval": {
+      "product": "Honcho (hosted)",
+      "list_price_usd_per_month": null,
+      "unit": null,
+      "url": "https://honcho.dev (pricing section)",
+      "date": "2026-10-03",
+      "plans": "Honcho Memory: ingestion (store + reasoning) $2.00 per 1M tokens; context() reads unlimited, ~200ms; dreaming included. Honcho Reasoning (dialectic chat) per query: Minimal $0.001, Low $0.01, Medium $0.05, High $0.10, Max $0.50. Startups under $5M raised: $1,000 credits, 12 months subsidized. Enterprise: custom.",
+      "notes": "Retrieval arm = context() reads, which are free: 100 recalls x $0 = $0. Ingestion = 600 turns x tokens/turn x $2/1M; tokens per turn is not in the repo's cost code (only turn counts), so per-user-month is not computed. Formula: 600 x T x 2e-6 USD; e.g. T=100 tokens/turn gives $0.12 (illustration only, not measured). No monthly fee found. Separate honcho.dev docs pricing URL returned 404."
+    },
+    "honcho_chat": {
+      "product": "Honcho (hosted)",
+      "list_price_usd_per_month": null,
+      "unit": null,
+      "url": "https://honcho.dev (pricing section)",
+      "date": "2026-10-03",
+      "plans": "Honcho Memory: ingestion (store + reasoning) $2.00 per 1M tokens; context() reads unlimited, ~200ms; dreaming included. Honcho Reasoning (dialectic chat) per query: Minimal $0.001, Low $0.01, Medium $0.05, High $0.10, Max $0.50. Startups under $5M raised: $1,000 credits, 12 months subsidized. Enterprise: custom.",
+      "notes": "Chat arm = Reasoning queries. 100 recalls/mo x per-query price: Minimal $0.10, Low $1.00, Medium $5.00, High $10.00, Max $50.00 per user-month, plus ingestion 600 x T x $2/1M (T tokens/turn, not known here). Tier used by the driver is not recorded in the price file, so no single figure is set."
+    },
+    "closed_book": {
+      "product": "none (no memory)",
+      "list_price_usd_per_month": 0,
+      "unit": "n/a",
+      "url": null,
+      "date": null,
+      "todo": null
+    },
+    "full_context": {
+      "product": "none (reader only)",
+      "list_price_usd_per_month": 0,
+      "unit": "n/a",
+      "url": null,
+      "date": null,
+      "todo": null
+    },
+    "zep": {
+      "product": "Zep Cloud (reference)",
+      "list_price_usd_per_month": null,
+      "unit": null,
+      "url": "https://www.getzep.com/pricing",
+      "date": "2026-10-03",
+      "plans": "Free $0: 10,000 credits/mo, no rollover, 2 projects. Flex $125/mo: 50,000 credits, overage $25 per 10,000, 600 req/min. Flex Plus $375/mo: 200,000 credits, overage $75 per 40,000, 1,000 req/min. Enterprise: custom, contact sales.",
+      "notes": "Credit cost per message/episode/retrieval not read from the page, so the 600-turn/100-recall profile is not converted. Reference only; not a benchmark arm."
+    },
+    "supermemory": {
+      "product": "Supermemory (reference)",
+      "list_price_usd_per_month": null,
+      "unit": null,
+      "url": "https://supermemory.ai/pricing",
+      "date": "2026-10-03",
+      "plans": "Free $0 ($5 credits). Pro $19/mo ($20 credits). Max $100/mo ($130 credits). Scale $399/mo ($600 credits). Enterprise: custom, contact sales. Rate card: Memory plain text $5/1M tokens, rich $10/1M; SuperRAG text $1/1M, rich $2/1M; search $5/1M queries; operations $100/1M.",
+      "notes": "Ingest = 600 x T x $5/1M (T tokens/turn unknown); search = 100 x $5/1M = $0.0005. Not converted without T. Reference only; not a benchmark arm."
+    }
   }
 }

@@ -1,0 +1,13 @@
+{
+  "_note": "Hand-edited. One entry per arm: the vendor's published list price for the hosted product, read from the vendor's own pricing page on the date given. Leave a value null until someone has read the page; the cost table prints TODO for null. Do not guess. Self-hosted open-source arms (mem0 OSS, Letta, Honcho self-hosted) have no list price for what we ran; record the hosted equivalent if you want one in the table.",
+  "systems": {
+    "flux_public":      {"product": "Flux Memory",        "list_price_usd_per_month": null, "unit": null, "url": null, "date": null, "todo": "TODO: read from the Flux pricing page"},
+    "flux_evidence":    {"product": "Flux Memory",        "list_price_usd_per_month": null, "unit": null, "url": null, "date": null, "todo": "TODO: same product as flux_public"},
+    "mem0":             {"product": "Mem0 platform",      "list_price_usd_per_month": null, "unit": null, "url": null, "date": null, "todo": "TODO: read from the mem0 pricing page"},
+    "letta":            {"product": "Letta Cloud",        "list_price_usd_per_month": null, "unit": null, "url": null, "date": null, "todo": "TODO: read from the Letta pricing page"},
+    "honcho_retrieval": {"product": "Honcho (hosted)",    "list_price_usd_per_month": null, "unit": null, "url": null, "date": null, "todo": "TODO: read from the Honcho pricing page"},
+    "honcho_chat":      {"product": "Honcho (hosted)",    "list_price_usd_per_month": null, "unit": null, "url": null, "date": null, "todo": "TODO: same product as honcho_retrieval"},
+    "closed_book":      {"product": "none (no memory)",   "list_price_usd_per_month": 0,    "unit": "n/a", "url": null, "date": null, "todo": null},
+    "full_context":     {"product": "none (reader only)", "list_price_usd_per_month": 0,    "unit": "n/a", "url": null, "date": null, "todo": null}
+  }
+}

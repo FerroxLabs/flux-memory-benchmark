@@ -1,0 +1,77 @@
+# Honcho v3.2.2 benchmark config, from the private run of 2026-10-02 (everything not listed is the shipped default). Only the database host changed (compose service pg).
+[app]
+LOG_LEVEL = "INFO"
+EMBED_MESSAGES = true
+[db]
+CONNECTION_URI = "postgresql+psycopg://postgres:honcho-local-only@pg:5432/postgres"
+[auth]
+USE_AUTH = false
+[llm]
+OPENAI_API_KEY = "proxy-key-not-a-secret"
+[embedding]
+VECTOR_DIMENSIONS = 384
+[embedding.model_config]
+transport = "openai"
+model = "bge-small-en-v1.5"
+[embedding.model_config.overrides]
+base_url = "http://127.0.0.1:18902/v1"
+[deriver]
+ENABLED = true
+WORKERS = 8
+FLUSH_ENABLED = true
+POLLING_STARTUP_JITTER_SECONDS = 0.0
+POLLING_SLEEP_MAX_INTERVAL_SECONDS = 2.0
+[deriver.model_config]
+transport = "openai"
+model = "deepseek-flash"
+structured_output_mode = "json_object"
+[deriver.model_config.overrides]
+base_url = "http://127.0.0.1:18901/deriver/v1"
+[dialectic.levels.minimal.model_config]
+transport = "openai"
+model = "deepseek-flash"
+[dialectic.levels.minimal.model_config.overrides]
+base_url = "http://127.0.0.1:18901/dialectic/v1"
+[dialectic.levels.low.model_config]
+transport = "openai"
+model = "deepseek-flash"
+[dialectic.levels.low.model_config.overrides]
+base_url = "http://127.0.0.1:18901/dialectic/v1"
+[dialectic.levels.medium.model_config]
+transport = "openai"
+model = "deepseek-flash"
+[dialectic.levels.medium.model_config.overrides]
+base_url = "http://127.0.0.1:18901/dialectic/v1"
+[dialectic.levels.high.model_config]
+transport = "openai"
+model = "deepseek-flash"
+[dialectic.levels.high.model_config.overrides]
+base_url = "http://127.0.0.1:18901/dialectic/v1"
+[dialectic.levels.max.model_config]
+transport = "openai"
+model = "deepseek-flash"
+[dialectic.levels.max.model_config.overrides]
+base_url = "http://127.0.0.1:18901/dialectic/v1"
+[summary]
+ENABLED = false
+[summary.model_config]
+transport = "openai"
+model = "deepseek-flash"
+[summary.model_config.overrides]
+base_url = "http://127.0.0.1:18901/summary/v1"
+[dream]
+ENABLED = false
+[dream.deduction_model_config]
+transport = "openai"
+model = "deepseek-flash"
+[dream.deduction_model_config.overrides]
+base_url = "http://127.0.0.1:18901/dream/v1"
+[dream.induction_model_config]
+transport = "openai"
+model = "deepseek-flash"
+[dream.induction_model_config.overrides]
+base_url = "http://127.0.0.1:18901/dream/v1"
+[cache]
+ENABLED = false
+[vector_store]
+TYPE = "pgvector"

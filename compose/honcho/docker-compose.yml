@@ -1,0 +1,38 @@
+# Honcho v3.2.2 (unmodified, AGPL) + pgvector: two containers. We run Honcho as published and ship only our driver code.
+#   export DEEPSEEK_API_KEY=...   (never commit it)
+#   sh compose/honcho/fetch-honcho.sh                       # clones the pinned commit and builds honcho-pinned:v3.2.2
+#   docker compose -f compose/honcho/docker-compose.yml up -d --build   (run from the repo root)
+#   docker compose -f compose/honcho/docker-compose.yml exec stack /sidecar/bin/python /repo/drivers/honcho_retrieval.py --arms ctx,chat \
+#        --units /work/units_n100.jsonl --out /results/honcho_retrieval       # ingest once, both Honcho arms
+#   (then the chat arm alone, no second ingest: .../honcho_chat.py --reuse-workspaces --units ... --out /results/honcho_chat)
+# Honcho deviations from defaults, and why (see config.toml): deriver FLUSH_ENABLED (no 30-minute batching), dream and summary off, auth off, cache off.
+services:
+  pg:
+    image: pgvector/pgvector:pg17@sha256:ac08538c6f8b9904c33c8224c5e5706dbe760aca29db1d096972b4052c22a75d
+    environment:
+      POSTGRES_PASSWORD: honcho-local-only
+      POSTGRES_DB: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 20
+  stack:
+    build:
+      context: ../..
+      dockerfile: compose/honcho/Dockerfile
+    depends_on:
+      pg:
+        condition: service_healthy
+    environment:
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:?set DEEPSEEK_API_KEY}
+      HONCHO_API: http://127.0.0.1:8000/v3
+      DSPROXY_STATS: http://127.0.0.1:18901/stats
+    volumes:
+      - ./config.toml:/app/config.toml:ro
+      - ../../:/repo:ro
+      - ../../work:/work
+      - ../../results:/results
+      - fastembed-cache:/cache
+    command: ["sh", "/stack.sh"]
+volumes:
+  fastembed-cache:

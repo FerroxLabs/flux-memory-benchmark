@@ -9,3 +9,6 @@ results/*/retrieved.jsonl
 __pycache__/
 compose/honcho/honcho-src/
 units*.jsonl
+# full per-item outputs copied from the run host quote LoCoMo / LongMemEval text; only results-public/ (stripped) is committed
+results/*
+!results/.gitkeep

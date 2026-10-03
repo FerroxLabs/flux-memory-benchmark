@@ -1,0 +1,165 @@
+Cloning into 'honcho-src'...
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.51kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.6s
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#3 resolve docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e done
+#3 CACHED
+
+#4 [internal] load metadata for ghcr.io/astral-sh/uv:0.9.24
+#4 DONE 0.5s
+
+#5 [internal] load metadata for docker.io/library/python:3.13-slim-bookworm
+#5 DONE 0.6s
+
+#6 [internal] load .dockerignore
+#6 transferring context:
+#6 transferring context: 188B done
+#6 DONE 0.0s
+
+#7 FROM ghcr.io/astral-sh/uv:0.9.24@sha256:816fdce3387ed2142e37d2e56e1b1b97ccc1ea87731ba199dc8a25c04e4997c5
+#7 resolve ghcr.io/astral-sh/uv:0.9.24@sha256:816fdce3387ed2142e37d2e56e1b1b97ccc1ea87731ba199dc8a25c04e4997c5 0.0s done
+#7 DONE 0.0s
+
+#8 [builder 1/5] FROM docker.io/library/python:3.13-slim-bookworm@sha256:5024f48ba9441d4b13a95d3945abc6365538e3a31109833367a1923523c6efed
+#8 resolve docker.io/library/python:3.13-slim-bookworm@sha256:5024f48ba9441d4b13a95d3945abc6365538e3a31109833367a1923523c6efed 0.0s done
+#8 DONE 0.0s
+
+#9 [internal] load build context
+#9 transferring context: 2.91MB 0.1s done
+#9 DONE 0.1s
+
+#10 [runtime  4/11] COPY --from=builder --chown=app:app /app/.venv /app/.venv
+#10 CACHED
+
+#11 [runtime  5/11] COPY --chown=app:app src/ /app/src/
+#11 CACHED
+
+#12 [runtime  3/11] RUN addgroup --system app     && adduser --system --group app     && chown app:app /app     && mkdir /app/lancedb_data     && chown app:app /app/lancedb_data
+#12 CACHED
+
+#13 [runtime  6/11] COPY --chown=app:app migrations/ /app/migrations/
+#13 CACHED
+
+#14 [runtime  8/11] COPY --chown=app:app docker/ /app/docker/
+#14 CACHED
+
+#15 [builder 5/5] RUN --mount=type=cache,target=/root/.cache/uv     if [ "false" = "true" ]; then         uv sync --frozen --no-install-project --no-group dev --extra lancedb;     elif [ "false" = "false" ]; then         uv sync --frozen --no-install-project --no-group dev;     else         echo "INSTALL_LANCEDB must be 'true' or 'false'" >&2;         exit 2;     fi
+#15 CACHED
+
+#16 [runtime  7/11] COPY --chown=app:app scripts/ /app/scripts/
+#16 CACHED
+
+#17 [runtime  9/11] COPY --chown=app:app alembic.ini /app/alembic.ini
+#17 CACHED
+
+#18 [builder 2/5] COPY --from=ghcr.io/astral-sh/uv:0.9.24 /uv /bin/uv
+#18 CACHED
+
+#19 [builder 4/5] COPY uv.lock pyproject.toml /app/
+#19 CACHED
+
+#20 [runtime  2/11] WORKDIR /app
+#20 CACHED
+
+#21 [runtime 10/11] COPY --chown=app:app pyproject.toml /app/pyproject.toml
+#21 CACHED
+
+#22 [builder 3/5] WORKDIR /app
+#22 CACHED
+
+#23 [runtime 11/11] COPY --chown=app:app config.toml* /app/
+#23 CACHED
+
+#24 exporting to image
+#24 exporting layers
+#24 exporting layers done
+#24 exporting manifest sha256:b2d0ab48183ee75bbb424f12527c0e5a030aa8f0a88851d6a1acc5179d01552d done
+#24 exporting config sha256:48cb30352a4fcafb629c42aefebe82b78cdaab794f185b85db6390008b571495 done
+#24 exporting attestation manifest sha256:f4052f2339532970301e85d9ebfea65b7bbc4a4d0e6f21b1c55dda3980f9c62d done
+#24 exporting manifest list sha256:44dc92bee10a46689f07bd8c161a7b7d94166c8a3c5697177ca274a4bfd57fbf done
+#24 naming to docker.io/library/honcho-pinned:v3.2.2 done
+#24 unpacking to docker.io/library/honcho-pinned:v3.2.2
+#24 unpacking to docker.io/library/honcho-pinned:v3.2.2 4.2s done
+#24 DONE 4.2s
+ Image ob-honcho-stack Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 539B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 442B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/honcho-pinned:v3.2.2
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 6.59kB done
+#5 DONE 0.0s
+
+#6 [1/4] FROM docker.io/library/honcho-pinned:v3.2.2@sha256:44dc92bee10a46689f07bd8c161a7b7d94166c8a3c5697177ca274a4bfd57fbf
+#6 resolve docker.io/library/honcho-pinned:v3.2.2@sha256:44dc92bee10a46689f07bd8c161a7b7d94166c8a3c5697177ca274a4bfd57fbf 0.0s done
+#6 DONE 0.0s
+
+#7 [2/4] RUN python3 -m venv /sidecar && /sidecar/bin/pip install --no-cache-dir fastembed==0.8.1 aiohttp==3.14.3 numpy==2.5.3 httpx==0.28.1
+#7 CACHED
+
+#8 [3/4] COPY infra/ /sidecar/infra/
+#8 CACHED
+
+#9 [4/4] COPY compose/honcho/stack.sh /stack.sh
+#9 DONE 1.7s
+
+#10 exporting to image
+#10 exporting layers 0.0s done
+#10 exporting manifest sha256:5d6d4cc29c36c791186d4c6d960c6f34eda2c5a2bdb6c899892a573e6c032e1a done
+#10 exporting config sha256:9ef290d177884d41ed49f0a84cf362d3ed48d02ffc7b355824df14ebad353da1 done
+#10 exporting attestation manifest sha256:215141c9d66bfe4c72a4951f582b5966a6eec68a3cf34dfeeb341ec091ad8a11 done
+#10 exporting manifest list sha256:1ae66b920aa1f022546b3d01d0cc60342e48161b39dfd020be0d605ad5697ddb done
+#10 naming to docker.io/library/ob-honcho-stack:latest done
+#10 unpacking to docker.io/library/ob-honcho-stack:latest
+#10 unpacking to docker.io/library/ob-honcho-stack:latest 1.9s done
+#10 DONE 2.0s
+
+#11 resolving provenance for metadata file
+#11 DONE 0.0s
+ Image ob-honcho-stack Built 
+ Network ob-honcho_default Creating 
+ Network ob-honcho_default Created 
+ Volume ob-honcho_fastembed-cache Creating 
+ Volume ob-honcho_fastembed-cache Created 
+ Container ob-honcho-pg-1 Creating 
+ Container ob-honcho-pg-1 Created 
+ Container ob-honcho-stack-1 Creating 
+ Container ob-honcho-stack-1 Created 
+ Container ob-honcho-pg-1 Starting 
+ Container ob-honcho-pg-1 Started 
+ Container ob-honcho-pg-1 Waiting 
+ Container ob-honcho-pg-1 Healthy 
+ Container ob-honcho-stack-1 Starting 
+ Container ob-honcho-stack-1 Started 
+ Container ob-honcho-stack-1 Stopping 
+ Container ob-honcho-stack-1 Stopped 
+ Container ob-honcho-stack-1 Removing 
+ Container ob-honcho-stack-1 Removed 
+ Container ob-honcho-pg-1 Stopping 
+ Container ob-honcho-pg-1 Stopped 
+ Container ob-honcho-pg-1 Removing 
+ Container ob-honcho-pg-1 Removed 
+ Network ob-honcho_default Removing 
+ Volume ob-honcho_fastembed-cache Removing 
+ Volume ob-honcho_fastembed-cache Removed 
+ Network ob-honcho_default Removed 
+Untagged: ob-honcho-stack:latest
+Deleted: sha256:1ae66b920aa1f022546b3d01d0cc60342e48161b39dfd020be0d605ad5697ddb

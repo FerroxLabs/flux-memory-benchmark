@@ -1,0 +1,91 @@
+2026-10-03T09:55:39Z START run.sh; kit archive; cap 75; spend_total=0
+2026-10-03T09:55:39Z stack up: flux
+2026-10-03T09:55:55Z flux_public lme start
+2026-10-03T10:29:39Z check lme/flux_public: {"dir": "results/flux_public", "units_done": 100, "unit_errors": 0, "missing": 0, "items_total": 0, "items_dropped": 0, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T10:29:39Z qa start lme/flux_public
+2026-10-03T10:31:31Z qa done lme/flux_public exit 0 summary: {"arm":"flux_public","n":100,"expected":100,"accuracy":0.84,"errors":0,"reader_usd":0.0731,"judge_usd":0.0087,"offmodel":[],"prompt_sha256":"cb2ed8ffeaf930b7bf47b0fbf52fabca91b82c785e148475cdd535c9f4dc6edb","bench":"lme","judge_models":["gpt-5-mini-2025-08-07","gpt-6-astra"]}  spend_total=0.0817
+2026-10-03T10:31:31Z flux extract lme start
+2026-10-03T10:50:22Z flux extract lme exit 0 spend_total=1.5254
+2026-10-03T10:50:22Z flux_evidence lme start
+2026-10-03T10:54:12Z check lme/flux_evidence: {"dir": "results/flux_evidence", "units_done": 100, "unit_errors": 0, "missing": 0, "items_total": 0, "items_dropped": 0, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T10:54:12Z qa start lme/flux_evidence
+2026-10-03T10:56:10Z qa done lme/flux_evidence exit 0 summary: {"arm":"flux_evidence","n":100,"expected":100,"accuracy":0.91,"errors":0,"reader_usd":0.1405,"judge_usd":0.009,"offmodel":[],"prompt_sha256":"cb2ed8ffeaf930b7bf47b0fbf52fabca91b82c785e148475cdd535c9f4dc6edb","bench":"lme","judge_models":["gpt-5-mini-2025-08-07","gpt-6-astra"]}  spend_total=1.6748
+2026-10-03T10:56:10Z flux_public locomo start
+2026-10-03T10:59:40Z check locomo/flux_public: {"dir": "results/locomo/flux_public", "units_done": 10, "unit_errors": 0, "missing": 0, "items_total": 0, "items_dropped": 0, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T10:59:40Z qa start locomo/flux_public
+2026-10-03T11:24:38Z qa done locomo/flux_public exit 0 summary: {"arm":"flux_public","n":1986,"expected":1986,"accuracy":0.7487,"errors":2,"reader_usd":1.7859,"judge_usd":0.2744,"offmodel":[],"prompt_sha256":"f0ce4540d38d093a3cf8bd49887c7fa791e9be283c1fe291d13cfc693d0d1536","bench":"locomo","judge_models":["gpt-5-mini-2025-08-07"]}  spend_total=3.7351
+2026-10-03T11:24:38Z flux extract locomo start
+2026-10-03T11:26:16Z flux extract locomo exit 0 spend_total=3.9065
+2026-10-03T11:26:16Z flux_evidence locomo start
+2026-10-03T11:29:18Z check locomo/flux_evidence: {"dir": "results/locomo/flux_evidence", "units_done": 10, "unit_errors": 0, "missing": 0, "items_total": 0, "items_dropped": 0, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T11:29:18Z qa start locomo/flux_evidence
+2026-10-03T11:52:22Z qa done locomo/flux_evidence exit 0 summary: {"arm":"flux_evidence","n":1986,"expected":1986,"accuracy":0.7432,"errors":1,"reader_usd":1.6506,"judge_usd":0.2762,"offmodel":[],"prompt_sha256":"f0ce4540d38d093a3cf8bd49887c7fa791e9be283c1fe291d13cfc693d0d1536","bench":"locomo","judge_models":["gpt-5-mini-2025-08-07"]}  spend_total=5.8333
+2026-10-03T11:52:22Z stack down: flux
+2026-10-03T11:53:01Z stack down done: flux; docker ps (own): 0
+2026-10-03T11:53:01Z closed_book lme start
+2026-10-03T11:53:06Z check lme/closed_book: {"dir": "results/closed_book", "units_done": 100, "unit_errors": 0, "missing": 0, "items_total": 0, "items_dropped": 0, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T11:53:06Z qa start lme/closed_book
+2026-10-03T11:55:07Z qa done lme/closed_book exit 0 summary: {"arm":"closed_book","n":100,"expected":100,"accuracy":0.1,"errors":0,"reader_usd":0.057,"judge_usd":0.0086,"offmodel":[],"prompt_sha256":"cb2ed8ffeaf930b7bf47b0fbf52fabca91b82c785e148475cdd535c9f4dc6edb","bench":"lme","judge_models":["gpt-5-mini-2025-08-07","gpt-6-astra"]}  spend_total=5.8988
+2026-10-03T11:55:07Z closed_book locomo start
+2026-10-03T11:55:07Z check locomo/closed_book: {"dir": "results/locomo/closed_book", "units_done": 10, "unit_errors": 0, "missing": 0, "items_total": 0, "items_dropped": 0, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T11:55:07Z qa start locomo/closed_book
+2026-10-03T12:52:05Z qa done locomo/closed_book exit 0 summary: {"arm":"closed_book","n":1986,"expected":1986,"accuracy":0.2155,"errors":1,"reader_usd":3.1634,"judge_usd":0.2668,"offmodel":[],"prompt_sha256":"f0ce4540d38d093a3cf8bd49887c7fa791e9be283c1fe291d13cfc693d0d1536","bench":"locomo","judge_models":["gpt-5-mini-2025-08-07"]}  spend_total=9.329
+2026-10-03T12:52:05Z full_context lme start
+2026-10-03T12:52:10Z check lme/full_context: {"dir": "results/full_context", "units_done": 100, "unit_errors": 0, "missing": 0, "items_total": 0, "items_dropped": 0, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T12:52:10Z qa start lme/full_context
+2026-10-03T12:54:09Z qa done lme/full_context exit 0 summary: {"arm":"full_context","n":100,"expected":100,"accuracy":0.94,"errors":0,"reader_usd":1.7534,"judge_usd":0.0088,"offmodel":[],"prompt_sha256":"cb2ed8ffeaf930b7bf47b0fbf52fabca91b82c785e148475cdd535c9f4dc6edb","bench":"lme","judge_models":["gpt-5-mini-2025-08-07","gpt-6-astra"]}  spend_total=11.0912
+2026-10-03T12:54:09Z full_context locomo start
+2026-10-03T12:54:11Z check locomo/full_context: {"dir": "results/locomo/full_context", "units_done": 10, "unit_errors": 0, "missing": 0, "items_total": 0, "items_dropped": 0, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T12:54:11Z qa start locomo/full_context
+2026-10-03T13:15:20Z qa done locomo/full_context exit 0 summary: {"arm":"full_context","n":1986,"expected":1986,"accuracy":0.7905,"errors":0,"reader_usd":1.1233,"judge_usd":0.2767,"offmodel":[],"prompt_sha256":"f0ce4540d38d093a3cf8bd49887c7fa791e9be283c1fe291d13cfc693d0d1536","bench":"locomo","judge_models":["gpt-5-mini-2025-08-07"]}  spend_total=12.4912
+2026-10-03T13:15:20Z stack up: honcho
+2026-10-03T13:15:57Z up: stack http://127.0.0.1:8000/health
+2026-10-03T13:15:57Z honcho lme start arms=ctx,chat (first 10 units, then cost rule)
+2026-10-03T13:32:11Z check lme/honcho_retrieval: {"dir": "results/honcho_retrieval", "units_done": 10, "unit_errors": 0, "missing": 0, "items_total": 5015, "items_dropped": 0, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T13:32:11Z honcho cost rule lme: rc=0 ok (10 haystacks seen)
+2026-10-03T16:00:42Z check lme/honcho_retrieval: {"dir": "results/honcho_retrieval", "units_done": 100, "unit_errors": 0, "missing": 0, "items_total": 49080, "items_dropped": 1, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T16:00:42Z qa start lme/honcho_retrieval
+2026-10-03T16:02:35Z qa done lme/honcho_retrieval exit 0 summary: {"arm":"honcho_retrieval","n":100,"expected":100,"accuracy":0.82,"errors":0,"reader_usd":0.0789,"judge_usd":0.0091,"offmodel":[],"prompt_sha256":"cb2ed8ffeaf930b7bf47b0fbf52fabca91b82c785e148475cdd535c9f4dc6edb","bench":"lme","judge_models":["gpt-5-mini-2025-08-07","gpt-6-astra"]}  spend_total=21.4524
+2026-10-03T16:02:35Z qa start lme/honcho_chat
+2026-10-03T16:03:47Z qa done lme/honcho_chat exit 0 summary: {"arm":"honcho_chat","n":100,"expected":100,"accuracy":0.81,"errors":0,"reader_usd":0.059,"judge_usd":0.0095,"offmodel":[],"prompt_sha256":"cb2ed8ffeaf930b7bf47b0fbf52fabca91b82c785e148475cdd535c9f4dc6edb","bench":"lme","judge_models":["gpt-5-mini-2025-08-07","gpt-6-astra"]}  spend_total=21.5208
+2026-10-03T16:03:48Z honcho locomo start arms=ctx,chat (first 3 units, then cost rule)
+2026-10-03T16:34:30Z check locomo/honcho_retrieval: {"dir": "results/locomo/honcho_retrieval", "units_done": 3, "unit_errors": 0, "missing": 0, "items_total": 1451, "items_dropped": 0, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T16:34:30Z honcho cost rule locomo: rc=0 ok (3 haystacks seen)
+2026-10-03T18:03:18Z check locomo/honcho_retrieval: {"dir": "results/locomo/honcho_retrieval", "units_done": 10, "unit_errors": 0, "missing": 0, "items_total": 5882, "items_dropped": 0, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T18:03:18Z qa start locomo/honcho_retrieval
+2026-10-03T18:24:12Z qa done locomo/honcho_retrieval exit 0 summary: {"arm":"honcho_retrieval","n":1986,"expected":1986,"accuracy":0.7382,"errors":0,"reader_usd":1.1933,"judge_usd":0.2763,"offmodel":[],"prompt_sha256":"f0ce4540d38d093a3cf8bd49887c7fa791e9be283c1fe291d13cfc693d0d1536","bench":"locomo","judge_models":["gpt-5-mini-2025-08-07"]}  spend_total=24.8225
+2026-10-03T18:24:12Z qa start locomo/honcho_chat
+2026-10-03T18:38:50Z qa done locomo/honcho_chat exit 0 summary: {"arm":"honcho_chat","n":1986,"expected":1986,"accuracy":0.856,"errors":0,"reader_usd":0.5299,"judge_usd":0.2759,"offmodel":[],"prompt_sha256":"f0ce4540d38d093a3cf8bd49887c7fa791e9be283c1fe291d13cfc693d0d1536","bench":"locomo","judge_models":["gpt-5-mini-2025-08-07"]}  spend_total=25.6282
+2026-10-03T18:38:50Z stack down: honcho
+2026-10-03T18:38:54Z stack down done: honcho; docker ps (own): 0
+2026-10-03T18:38:54Z stack up: mem0
+2026-10-03T18:39:16Z up: mem0 http://127.0.0.1:18800/stats
+2026-10-03T18:39:16Z mem0 lme start (first 10 units, check, rest)
+2026-10-03T18:44:07Z check lme/mem0: {"dir": "results/mem0", "units_done": 10, "unit_errors": 0, "missing": 0, "items_total": 488, "items_dropped": 0, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T19:14:33Z check lme/mem0: {"dir": "results/mem0", "units_done": 100, "unit_errors": 0, "missing": 0, "items_total": 4753, "items_dropped": 0, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T19:14:33Z qa start lme/mem0
+2026-10-03T19:16:37Z qa done lme/mem0 exit 0 summary: {"arm":"mem0","n":100,"expected":100,"accuracy":0.75,"errors":0,"reader_usd":0.125,"judge_usd":0.0092,"offmodel":[],"prompt_sha256":"cb2ed8ffeaf930b7bf47b0fbf52fabca91b82c785e148475cdd535c9f4dc6edb","bench":"lme","judge_models":["gpt-5-mini-2025-08-07","gpt-6-astra"]}  spend_total=29.9196
+2026-10-03T19:16:37Z mem0 locomo start (first 3 units, check, rest)
+2026-10-03T19:18:08Z check locomo/mem0: {"dir": "results/locomo/mem0", "units_done": 3, "unit_errors": 0, "missing": 0, "items_total": 70, "items_dropped": 0, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T19:19:52Z check locomo/mem0: {"dir": "results/locomo/mem0", "units_done": 10, "unit_errors": 0, "missing": 0, "items_total": 272, "items_dropped": 0, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T19:19:52Z qa start locomo/mem0
+2026-10-03T19:40:31Z qa done locomo/mem0 exit 0 summary: {"arm":"mem0","n":1986,"expected":1986,"accuracy":0.7261,"errors":0,"reader_usd":1.2917,"judge_usd":0.2715,"offmodel":[],"prompt_sha256":"f0ce4540d38d093a3cf8bd49887c7fa791e9be283c1fe291d13cfc693d0d1536","bench":"locomo","judge_models":["gpt-5-mini-2025-08-07"]}  spend_total=31.6486
+2026-10-03T19:40:31Z stack down: mem0
+2026-10-03T19:40:43Z stack down done: mem0; docker ps (own): 0
+2026-10-03T19:40:43Z stack up: letta
+2026-10-03T19:41:25Z up: letta http://127.0.0.1:8283/v1/health/
+2026-10-03T19:41:25Z letta lme start (first 10 units, check, rest)
+2026-10-03T19:56:02Z check lme/letta: {"dir": "results/letta", "units_done": 10, "unit_errors": 0, "missing": 0, "items_total": 5015, "items_dropped": 0, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T21:59:09Z check lme/letta: {"dir": "results/letta", "units_done": 100, "unit_errors": 0, "missing": 0, "items_total": 49081, "items_dropped": 1, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T21:59:09Z qa start lme/letta
+2026-10-03T22:01:03Z qa done lme/letta exit 0 summary: {"arm":"letta","n":100,"expected":100,"accuracy":0.81,"errors":0,"reader_usd":0.1233,"judge_usd":0.0085,"offmodel":[],"prompt_sha256":"cb2ed8ffeaf930b7bf47b0fbf52fabca91b82c785e148475cdd535c9f4dc6edb","bench":"lme","judge_models":["gpt-5-mini-2025-08-07","gpt-6-astra"]}  spend_total=31.7803
+2026-10-03T22:01:03Z letta locomo start (first 3 units, check, rest)
+2026-10-03T22:08:05Z check locomo/letta: {"dir": "results/locomo/letta", "units_done": 3, "unit_errors": 0, "missing": 0, "items_total": 1451, "items_dropped": 0, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T22:25:20Z check locomo/letta: {"dir": "results/locomo/letta", "units_done": 10, "unit_errors": 0, "missing": 0, "items_total": 5882, "items_dropped": 0, "unit_fail_rate": 0.0, "item_drop_rate": 0.0}
+2026-10-03T22:25:20Z qa start locomo/letta
+2026-10-03T23:01:03Z qa done locomo/letta exit 0 summary: {"arm":"letta","n":1986,"expected":1986,"accuracy":0.6767,"errors":2,"reader_usd":2.3148,"judge_usd":0.2734,"offmodel":[],"prompt_sha256":"f0ce4540d38d093a3cf8bd49887c7fa791e9be283c1fe291d13cfc693d0d1536","bench":"locomo","judge_models":["gpt-5-mini-2025-08-07"]}  spend_total=34.3685
+2026-10-03T23:01:03Z stack down: letta
+2026-10-03T23:01:16Z stack down done: letta; docker ps (own): 0
+2026-10-03T23:01:16Z final spend_total=34.3685
+2026-10-03T23:01:16Z DONE
+2026-10-03T23:01:16Z EXIT run.sh (status 0)

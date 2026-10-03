@@ -1,0 +1,1 @@
+{"arm": "mem0", "n": 100, "expected": 100, "accuracy": 0.75, "errors": 0, "reader_usd": 0.125, "judge_usd": 0.0092, "offmodel": [], "prompt_sha256": "cb2ed8ffeaf930b7bf47b0fbf52fabca91b82c785e148475cdd535c9f4dc6edb", "bench": "lme", "judge_models": ["gpt-5-mini-2025-08-07", "gpt-6-astra"]}

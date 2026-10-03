@@ -1,0 +1,1 @@
+{"arm": "flux_public", "n": 1986, "expected": 1986, "accuracy": 0.7487, "errors": 2, "reader_usd": 1.7859, "judge_usd": 0.2744, "offmodel": [], "prompt_sha256": "f0ce4540d38d093a3cf8bd49887c7fa791e9be283c1fe291d13cfc693d0d1536", "bench": "locomo", "judge_models": ["gpt-5-mini-2025-08-07"]}

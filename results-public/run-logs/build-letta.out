@@ -1,0 +1,74 @@
+ Image ob-letta-letta Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 550B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 896B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim@sha256:dddfd7e07f9d15aeeca61529320492139d21cac7f0070c00609243e51e4e0016
+#3 DONE 0.7s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [1/5] FROM docker.io/library/python:3.12-slim@sha256:dddfd7e07f9d15aeeca61529320492139d21cac7f0070c00609243e51e4e0016
+#5 resolve docker.io/library/python:3.12-slim@sha256:dddfd7e07f9d15aeeca61529320492139d21cac7f0070c00609243e51e4e0016 0.0s done
+#5 DONE 0.0s
+
+#6 [2/5] RUN apt-get update && apt-get install -y --no-install-recommends gcc libc6-dev libpq-dev && rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 [3/5] RUN pip install --no-cache-dir "letta[postgres,server]==0.16.8" letta-client==1.11.0 fastembed==0.8.1 aiohttp==3.14.3 httpx==0.28.1 numpy==2.5.3
+#7 CACHED
+
+#8 [4/5] RUN pip download letta==0.16.8 --no-deps --no-binary :all: -d /tmp/sdist -q && tar xzf /tmp/sdist/letta-0.16.8.tar.gz -C /tmp/sdist  && mkdir -p /opt/letta-migrations && cp -r /tmp/sdist/letta-0.16.8/alembic /tmp/sdist/letta-0.16.8/alembic.ini /opt/letta-migrations/ && rm -rf /tmp/sdist
+#8 CACHED
+
+#9 [5/5] WORKDIR /repo
+#9 CACHED
+
+#10 exporting to image
+#10 exporting layers done
+#10 exporting manifest sha256:952ae660e5911ad5dec5fddaafddceef8721e43647db46712f42da8a6cf8f1a0 done
+#10 exporting config sha256:6b638e5bb869ee3e2b1e2460699fbc314fdc85bec7a66b2f14313572ce08e3d9 done
+#10 exporting attestation manifest sha256:a9040e643ad2da2e71d296e47631806b5d2097a67827a8a1ce355bc990091420 done
+#10 exporting manifest list sha256:d370b053743a9ff3e7d3a799a6b7c6383659c7e436914072d145c5ffab4ed263 done
+#10 naming to docker.io/library/ob-letta-letta:latest done
+#10 unpacking to docker.io/library/ob-letta-letta:latest
+#10 unpacking to docker.io/library/ob-letta-letta:latest 18.6s done
+#10 DONE 18.7s
+
+#11 resolving provenance for metadata file
+#11 DONE 0.0s
+ Image ob-letta-letta Built 
+ Network ob-letta_default Creating 
+ Network ob-letta_default Created 
+ Volume ob-letta_fastembed-cache Creating 
+ Volume ob-letta_fastembed-cache Created 
+ Container ob-letta-pg-1 Creating 
+ Container ob-letta-pg-1 Created 
+ Container ob-letta-letta-1 Creating 
+ Container ob-letta-letta-1 Created 
+ Container ob-letta-pg-1 Starting 
+ Container ob-letta-pg-1 Started 
+ Container ob-letta-pg-1 Waiting 
+ Container ob-letta-pg-1 Healthy 
+ Container ob-letta-letta-1 Starting 
+ Container ob-letta-letta-1 Started 
+ Container ob-letta-letta-1 Stopping 
+ Container ob-letta-letta-1 Stopped 
+ Container ob-letta-letta-1 Removing 
+ Container ob-letta-letta-1 Removed 
+ Container ob-letta-pg-1 Stopping 
+ Container ob-letta-pg-1 Stopped 
+ Container ob-letta-pg-1 Removing 
+ Container ob-letta-pg-1 Removed 
+ Volume ob-letta_fastembed-cache Removing 
+ Network ob-letta_default Removing 
+ Volume ob-letta_fastembed-cache Removed 
+ Network ob-letta_default Removed 
+Untagged: ob-letta-letta:latest
+Deleted: sha256:d370b053743a9ff3e7d3a799a6b7c6383659c7e436914072d145c5ffab4ed263

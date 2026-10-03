@@ -1,0 +1,58 @@
+ Image ob-mem0-mem0 Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 542B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 332B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim@sha256:dddfd7e07f9d15aeeca61529320492139d21cac7f0070c00609243e51e4e0016
+#3 DONE 0.7s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [1/3] FROM docker.io/library/python:3.12-slim@sha256:dddfd7e07f9d15aeeca61529320492139d21cac7f0070c00609243e51e4e0016
+#5 resolve docker.io/library/python:3.12-slim@sha256:dddfd7e07f9d15aeeca61529320492139d21cac7f0070c00609243e51e4e0016 0.0s done
+#5 DONE 0.0s
+
+#6 [2/3] RUN pip install --no-cache-dir mem0ai==2.2.1 fastembed==0.8.1 aiohttp==3.14.3 httpx==0.28.1 numpy==2.5.3
+#6 CACHED
+
+#7 [3/3] WORKDIR /repo
+#7 CACHED
+
+#8 exporting to image
+#8 exporting layers done
+#8 exporting manifest sha256:2c176e7cd716e57f38b98b18299acfee6a5616723df321d71c4ed00b146c547a done
+#8 exporting config sha256:800be82465d8332656b51e6c40490ad1ff7dc9bf6fb66d94d1f21afe3b742ffc done
+#8 exporting attestation manifest sha256:930b65fb9063642a0a721e763a83cd274dd636a8351d7d2b663a6b5aa42202a3 done
+#8 exporting manifest list sha256:0859d2f4ef9548c56ab9fcd2a74fce69f0c4a65a1f2093091f0976993be0cc2a done
+#8 naming to docker.io/library/ob-mem0-mem0:latest done
+#8 unpacking to docker.io/library/ob-mem0-mem0:latest
+#8 unpacking to docker.io/library/ob-mem0-mem0:latest 4.3s done
+#8 DONE 4.3s
+
+#9 resolving provenance for metadata file
+#9 DONE 0.0s
+ Image ob-mem0-mem0 Built 
+ Network ob-mem0_default Creating 
+ Network ob-mem0_default Created 
+ Volume ob-mem0_fastembed-cache Creating 
+ Volume ob-mem0_fastembed-cache Created 
+ Container ob-mem0-mem0-1 Creating 
+ Container ob-mem0-mem0-1 Created 
+ Container ob-mem0-mem0-1 Starting 
+ Container ob-mem0-mem0-1 Started 
+ Container ob-mem0-mem0-1 Stopping 
+ Container ob-mem0-mem0-1 Stopped 
+ Container ob-mem0-mem0-1 Removing 
+ Container ob-mem0-mem0-1 Removed 
+ Volume ob-mem0_fastembed-cache Removing 
+ Network ob-mem0_default Removing 
+ Volume ob-mem0_fastembed-cache Removed 
+ Network ob-mem0_default Removed 
+Untagged: ob-mem0-mem0:latest
+Deleted: sha256:0859d2f4ef9548c56ab9fcd2a74fce69f0c4a65a1f2093091f0976993be0cc2a

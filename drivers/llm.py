@@ -3,7 +3,7 @@
 Reader   (all arms, held equal): READER_BASE_URL (default https://api.deepseek.com), key in DEEPSEEK_API_KEY (or the file named by
          DEEPSEEK_API_KEY_FILE), model READER_MODEL (default deepseek-flash), temperature 0, max_tokens 6000, thinking at the provider default.
 Judge    (non-preference): JUDGE_BASE_URL (default https://api.openai.com/v1), JUDGE_API_KEY, JUDGE_MODEL (default gpt-5-mini),
-         reasoning_effort minimal, max_completion_tokens 10.
+         reasoning_effort minimal, max_completion_tokens JUDGE_MAX_TOKENS (default 300; 10 returns an empty reply on the direct OpenAI API).
 Pref     (single-session-preference, decision 14): PREF_JUDGE_BASE_URL / PREF_JUDGE_API_KEY (default to the JUDGE_* values),
          PREF_JUDGE_MODEL (default gpt-6-astra), reasoning_effort low, max_completion_tokens 2000.
 Limits:  READER_INFLIGHT (default 8), JUDGE_INFLIGHT (default 2), <=2 retries on 429/5xx, a breaker that aborts once 429+503 pass 2% of >=50 calls.
@@ -116,14 +116,17 @@ def judge(prompt, preference=False):
     key = os.environ.get(p + 'JUDGE_API_KEY') or _key('JUDGE_API_KEY')
     model = os.environ.get(p + 'JUDGE_MODEL', 'gpt-6-astra' if preference else 'gpt-5-mini')
     body = {'model': model, 'messages': [{'role': 'user', 'content': prompt}],
-            'max_completion_tokens': 2000 if preference else 10, 'reasoning_effort': 'low' if preference else 'minimal'}
+            'max_completion_tokens': 2000 if preference else int(os.environ.get('JUDGE_MAX_TOKENS', '300')), 'reasoning_effort': 'low' if preference else 'minimal'}
     with JUDGE.sem:
         d = _post(JUDGE, base + '/chat/completions', key, body, 300)
     u = d.get('usage') or {}
     cost = (u.get('prompt_tokens', 0) * float(os.environ.get('JUDGE_USD_PER_M_IN', 0)) +
             u.get('completion_tokens', 0) * float(os.environ.get('JUDGE_USD_PER_M_OUT', 0))) / 1e6
     JUDGE.add_cost(cost)
-    return {'content': (d['choices'][0]['message'].get('content') or '') if d.get('choices') else '', 'cost': cost, 'usage': u,
+    text = (d['choices'][0]['message'].get('content') or '') if d.get('choices') else ''
+    if not text.strip():  # an empty reply is a failed grade, never a silent 'no' (direct gpt-5-mini spends a tiny budget on reasoning alone)
+        raise RuntimeError('judge_empty_reply')
+    return {'content': text, 'cost': cost, 'usage': u,
             'model': str(d.get('model') or model)}
 
 

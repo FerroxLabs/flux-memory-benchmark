@@ -262,7 +262,7 @@ class TestCostTable(unittest.TestCase):
 
 class TestLedgerAndEstimate(unittest.TestCase):
     def test_cap_and_bench_tag(self):
-        self.assertEqual(ledger.CAP, 55.0)
+        self.assertEqual(ledger.CAP, 75.0)
         with tempfile.TemporaryDirectory() as d:
             old, ledger.LEDGER = ledger.LEDGER, os.path.join(d, 'l.jsonl')
             try:
@@ -270,7 +270,7 @@ class TestLedgerAndEstimate(unittest.TestCase):
                 ledger.add('mem0', 'ingest', 1.0); ledger.add('mem0', 'qa', 2.0, bench='locomo')
                 os.environ['BENCH'] = 'locomo'; ledger.add('letta', 'qa', 3.0)
                 self.assertEqual([r['bench'] for r in ledger.read()], ['lme', 'locomo', 'locomo'])
-                self.assertTrue(ledger.over_cap(50.0)); self.assertFalse(ledger.over_cap(48.0))
+                self.assertTrue(ledger.over_cap(70.0)); self.assertFalse(ledger.over_cap(68.0))
             finally:
                 ledger.LEDGER = old; os.environ.pop('BENCH', None)
 

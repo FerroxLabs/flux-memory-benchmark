@@ -1,4 +1,4 @@
-"""Flux Memory arms over the PRODUCT retrieval code of the build under test (integration/phaseb @ a3b8a520), per-haystack isolation.
+"""Flux Memory arms over the PRODUCT retrieval code of the build under test (integration/phaseb @ c63e8d14), per-haystack isolation.
 
 Adapted from the private quality2/attrib3 q2_ctx.py (the harness behind the LME-S 500 numbers: public 0.832, evidence 0.910). Every turn is one source.
   public   (arm flux_public)   : LexicalIndex + DenseIndex(bge-small) + RRF, LocalReranker top-30, then the product's store._recall_result

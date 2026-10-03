@@ -27,7 +27,7 @@ def load_units(path, only=None):
 
 
 def ledger_add(arm, stage, usd, units=1):
-    """Put a stage's spend on the shared ledger (runner/ledger.py), so the $55 cap sees ingest and query spend as well as reader and judge spend."""
+    """Put a stage's spend on the shared ledger (runner/ledger.py), so the $75 cap sees ingest and query spend as well as reader and judge spend."""
     sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'runner'))
     import ledger
     ledger.add(arm, stage, usd, units)  # bench comes from the BENCH environment variable ('lme' default, 'locomo')

@@ -1,4 +1,4 @@
-"""Budget estimate for both benchmarks (LongMemEval-S n=100 and LoCoMo, 10 conversations, 1,986 questions) against the $55 cap. Prints the markdown used in COST.md.
+"""Budget estimate for both benchmarks (LongMemEval-S n=100 and LoCoMo, 10 conversations, 1,986 questions) against the cap (now $75; the estimate was written against $55). Prints the markdown used in COST.md.
 Every input is MEASURED in the private runs (2026-09-30 to 2026-10-03; source in the row) or flagged ESTIMATED. No accuracy figure is used here.
 Flux build priced here: integration/phaseb @ c63e8d14 (same code as a3b8a520 plus a manifests-only commit).
 usage: python3 analysis/cost_estimate.py"""

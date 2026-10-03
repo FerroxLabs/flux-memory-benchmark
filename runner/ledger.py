@@ -1,8 +1,8 @@
 """Spend ledger and stop rules. Append-only results/ledger.jsonl; one line per stage end.
 
   python3 runner/ledger.py add  --arm mem0 --stage ingest --usd 0.081 [--units 1]
-  python3 runner/ledger.py status [--cap 55]            # totals by arm; exit 3 if over the cap
-  python3 runner/ledger.py check --reserve 2.5 [--cap 55]   # exit 3 if committed + reserve would pass the cap
+  python3 runner/ledger.py status [--cap 75]            # totals by arm; exit 3 if over the cap
+  python3 runner/ledger.py check --reserve 2.5 [--cap 75]   # exit 3 if committed + reserve would pass the cap
   python3 runner/ledger.py honcho-rule --dir results/honcho_retrieval   # exit 4 if mean ingest cost > $0.15/haystack after the first 10
   python3 runner/ledger.py honcho-rule --dir results/locomo/honcho_retrieval --locomo   # LoCoMo: after the first 3 conversations, ceiling scaled by turns
 """
@@ -10,7 +10,7 @@ import argparse, json, os, sys, time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LEDGER = os.environ.get('LEDGER_PATH') or os.path.join(ROOT, 'results', 'ledger.jsonl')  # LEDGER_PATH: inside containers /repo is read-only
-CAP = 55.0  # LongMemEval and LoCoMo together (decision 9); was 40 for LongMemEval alone
+CAP = 75.0  # LongMemEval and LoCoMo together; raised from 55 to 75 by the owner on 2026-10-03, before the run started (was 40 for LongMemEval alone)
 HONCHO_PER_HAYSTACK_LIMIT = 0.15
 HONCHO_AFTER = 10
 # LoCoMo has 10 conversations, so the rule is checked after the first 3, against the LME ceiling scaled by turns per haystack (588 vs 491 turns).

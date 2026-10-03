@@ -49,7 +49,7 @@ def render(row):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--inputs', required=True); ap.add_argument('--arm', required=True); ap.add_argument('--out', required=True)
-    ap.add_argument('--reserve', type=float, default=0.0, help='refuse to start if committed spend + reserve passes the $55 cap')
+    ap.add_argument('--reserve', type=float, default=0.0, help='refuse to start if committed spend + reserve passes the $75 cap')
     ap.add_argument('--bench', choices=['lme', 'locomo'], default='lme')
     a = ap.parse_args()
     if ledger.over_cap(a.reserve):

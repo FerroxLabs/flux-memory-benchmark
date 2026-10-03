@@ -1,6 +1,6 @@
 # Budget estimate, LongMemEval-S n=100 plus LoCoMo
 
-Plan limits (decisions 9 and 17): one **$55 cap** for both benchmarks together (LongMemEval about $23 to $32, LoCoMo about $12 to $22), and the Honcho stop rule.
+Plan limits (decisions 9 and 17): one **$75 cap** (raised from $55 on 2026-10-03, before the run; the tables below were estimated against $55) for both benchmarks together (LongMemEval about $23 to $32, LoCoMo about $12 to $22), and the Honcho stop rule.
 Regenerate the tables with `python3 analysis/cost_estimate.py`. Every input is either measured in the private runs (source named in the row; no accuracy figure is used) or flagged ESTIMATED.
 
 ### LongMemEval-S, n=100

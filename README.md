@@ -103,7 +103,7 @@ The same arms run on LoCoMo (Maharana et al., "Evaluating Very Long-Term Convers
 ## Stop rules
 
 - An arm with more than 2% of ingest items failed or dropped is stopped, the setup is fixed and that arm is restarted from a clean store. This is a setup fix, not a re-roll, and is logged.
-- Spend cap **$55** (both benchmarks together): when it is reached, stop and report what is complete. A partial arm is not reported as a result (`analyze.py` marks it INCOMPLETE and leaves it out of every comparison). `runner/ledger.py` keeps the ledger and refuses to start a stage that would pass the cap.
+- Spend cap **$75** (raised from $55 by the owner on 2026-10-03, before the run started; both benchmarks together): when it is reached, stop and report what is complete. A partial arm is not reported as a result (`analyze.py` marks it INCOMPLETE and leaves it out of every comparison). `runner/ledger.py` keeps the ledger and refuses to start a stage that would pass the cap.
 - Honcho: if its ingest cost passes **$0.15 per haystack** (averaged over the first 10), pause and find out why before continuing. On LoCoMo the rule is checked after the first 3 conversations against $0.18 per conversation.
 - The Flux build is fixed before the draw.
 

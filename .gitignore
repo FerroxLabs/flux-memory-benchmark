@@ -1,0 +1,11 @@
+# never commit keys, dataset text, or run artefacts
+.env
+*.key
+secrets/
+data/
+work/
+results/*/retrieved.jsonl
+*.pyc
+__pycache__/
+compose/honcho/honcho-src/
+units*.jsonl

@@ -1,0 +1,56 @@
+{
+ "dataset": "LongMemEval-S (longmemeval_s_cleaned.json)",
+ "dataset_sha256": "d6f21ea9d60a0d56f34a05b609c79c88a451d2ae03597821ea3d5a9678c3a442",
+ "seed": 20261003,
+ "n": 100,
+ "rank_rule": "sha256(\"<seed>:<question_id>\") ascending inside each type",
+ "allocation_rule": "largest remainder; ties -> larger stratum, then type name",
+ "population_by_type": {
+  "knowledge-update": 78,
+  "multi-session": 133,
+  "single-session-assistant": 56,
+  "single-session-preference": 30,
+  "single-session-user": 70,
+  "temporal-reasoning": 133
+ },
+ "drawn_by_type": {
+  "knowledge-update": 15,
+  "multi-session": 27,
+  "single-session-assistant": 11,
+  "single-session-preference": 6,
+  "single-session-user": 14,
+  "temporal-reasoning": 27
+ },
+ "abstention_questions_drawn": 5,
+ "prior_dev_subset": {
+  "file": "prior_dev_subset_2026-09-30.ids",
+  "size": 100,
+  "overlap": 23,
+  "overlap_ids": [
+   "031748ae",
+   "0977f2af",
+   "0a995998",
+   "1c549ce4",
+   "1cea1afa",
+   "1d4e3b97",
+   "21436231",
+   "2ebe6c90",
+   "4d6b87c8",
+   "54026fce",
+   "58470ed2",
+   "5d3d2817",
+   "6456829e",
+   "65240037",
+   "6a27ffc2",
+   "80ec1f4f",
+   "8752c811",
+   "ad7109d1",
+   "c19f7a0b",
+   "e3038f8c",
+   "e5ba910e_abs",
+   "efc3f7c2",
+   "gpt4_4edbafa2"
+  ]
+ },
+ "ids_file": "lme_s_ids_n100.txt"
+}

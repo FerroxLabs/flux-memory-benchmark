@@ -1,0 +1,4 @@
+# analysis and runner need only the standard library. Drivers need what their own system needs:
+numpy==2.3.3        # flux drivers
+httpx==0.28.1       # honcho drivers
+# mem0 / letta / honcho client pins live in compose/<system>/ (they are installed inside those containers)

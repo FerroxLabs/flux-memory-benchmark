@@ -1,0 +1,11 @@
+{
+  "reader": {"model_env": "READER_MODEL", "default_model": "deepseek-flash", "base_url_env": "READER_BASE_URL", "default_base_url": "https://api.deepseek.com",
+             "temperature": 0, "max_tokens": 6000, "empty_answer_retry_max_tokens": 12000, "thinking": "provider default (on)"},
+  "judge": {"model_env": "JUDGE_MODEL", "default_model": "gpt-5-mini", "reasoning_effort": "minimal", "max_completion_tokens": 10,
+            "prompt": "lme_prompts.anscheck_prompt (official, per question type)", "label_rule": "'yes' in lowercased reply",
+            "used_for": "every question type except single-session-preference"},
+  "preference_judge": {"model_env": "PREF_JUDGE_MODEL", "default_model": "gpt-6-astra", "reasoning_effort": "low", "max_completion_tokens": 2000,
+            "prompt": "lme_prompts.anscheck_prompt, task=single-session-preference (official preference template)",
+            "used_for": "single-session-preference only (decision 14); applied identically to every arm",
+            "note": "Set PREF_JUDGE_MODEL to the provider's id for GPT-6 Astra. The model id is not the same on every API."}
+}

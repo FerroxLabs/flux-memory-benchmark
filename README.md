@@ -1,6 +1,6 @@
 # Flux Memory vs mem0, Letta and Honcho on LongMemEval-S and LoCoMo
 
-**Status: prepared, not run, not published.** Nothing in this repository has been run against a paid API. No result exists yet. No marketing claim is made before the run is finished and the results are published here.
+**Status: run once on 2026-10-03; results are in [REPORT.md](REPORT.md).** This README is the preregistration: its sections "Held equal", "Statistics", "LoCoMo" and "Stop rules" were committed before the run and are unchanged since (see the git history; the kit that ran is commit `a9a65be`). Only this status line and the one "known limits" bullet about the run were updated afterwards. Deviations from the preregistration are listed in REPORT.md.
 
 ## The claim we want to be able to make, or not
 
@@ -167,7 +167,7 @@ Notes: `honcho_chat` has no ingest of its own and reads the Honcho workspaces ma
 ## Known limits of this preparation
 
 - **Flux arms run in-process, not over HTTP.** `flux_public` and `flux_evidence` run the release build's own retrieval and assembly modules from a checkout (the code the API serves, and the path behind the earlier 500-question numbers), not through a live `/v1/memory/recall` call. An HTTP route exists in the private tier-2 harness and has not been ported. Flux's source is not part of this repository.
-- **Smoke-tested, not run.** A 2-haystack smoke run of all eight arms (built and run on a Linux host, one system at a time) passed on 2026-10-03 after the setup fixes in the commit log; the 100-question run has not started. The Flux arms run in a CPU container (`compose/flux/`). On a Docker host whose default address pools are used up, set `LANE_SUBNET` (the compose files default to 10.77.0.0/24).
+- **One run per arm.** A 2-haystack smoke run of all eight arms passed on 2026-10-03 after the setup fixes in the commit log; the full run followed the same day, one run per arm, no reruns. The Flux arms run in a CPU container (`compose/flux/`). On a Docker host whose default address pools are used up, set `LANE_SUBNET` (the compose files default to 10.77.0.0/24).
 - **The judges run on the provider endpoints you configure.** The private runs graded through FluxRouter. A direct `gpt-5-mini` call here does not send a temperature (the model rejects non-default values), and the GPT-6 Astra model id differs between APIs, so `PREF_JUDGE_MODEL` must be set. The frozen preference judge is therefore the one place a reader of this repository cannot reproduce exactly without access to that model.
 - **Letta**: 0.16.8 is pinned to match earlier measurements, but newer releases exist (see `compose/VERSIONS.md`).
 - **Honcho** is AGPL. We run it unmodified and ship only our driver and our `config.toml`.

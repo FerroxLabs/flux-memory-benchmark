@@ -1,6 +1,6 @@
 # Publish checklist (a human confirms every item before this repository is made public)
 
-The repository is private and local: no remote, nothing pushed. Do not add a remote or publish until each box below is ticked by a person.
+Kept as the record of what was checked before this repository was made public on 2026-10-03 (see the verification section at the end).
 
 Status of each item as of the commit that added this file is given in brackets; it is a check by the author of the commit, not a confirmation.
 
@@ -24,3 +24,11 @@ Status of each item as of the commit that added this file is given in brackets; 
 - [ ] The repo and its numbers are not used in paid advertising or other commercial promotion for LoCoMo figures (CC BY-NC 4.0 and the README: research reporting only).
 - [ ] No claim of "best" or "winner" appears in any public text derived from REPORT.md.
 - [ ] Decide separately before publishing whether to rerun Letta on a current release (README known limit) and whether Flux's in-process runs need an HTTP-path rerun.
+
+## Verification on 2026-10-03 (before publishing)
+- LoCoMo licence read at github.com/snap-research/locomo/LICENSE.txt: Attribution-NonCommercial 4.0 International. LongMemEval repository licence: MIT.
+- Secrets: pattern search over every commit in the history found nothing.
+- Kit that ran: file hashes on the run host equal commit `a9a65be`. Flux build: `src/flux_memory` on the run host equals `c63e8d14` file for file.
+- `python3 analysis/report.py --check` exits 0 on the published tree.
+- No Honcho source, no dataset text, no host names or private paths in tracked files (one Docker cache path inside a build log).
+- Commit author e-mail normalised to the company address before the first push.

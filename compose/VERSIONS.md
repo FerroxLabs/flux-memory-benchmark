@@ -15,4 +15,4 @@
 
 Letta note: the private measurements used 0.16.8. Pinning to it keeps this run comparable with those, but the Letta notice (notices/letta.md) must say a newer release exists and ask the maintainers which they want measured. If they name the newer release, re-pin before the freeze and re-run the Letta smoke test.
 
-Not verified: docker images in compose/ have never been built (no Docker on the Mac and no Hetzner run is allowed at this stage). The first thing to do on Hetzner is `docker compose build` for each system and a 2-haystack smoke run.
+Smoke test 2026-10-03 (Hetzner, 2 haystacks, Flux build c63e8d14, which has the same code as a3b8a520 plus a manifests-only commit): all eight arms built, ran and were graded. Image sizes: flux 1.71 GB (python:3.12-slim, torch 2.8.0 CPU, transformers 4.56.2, numpy 2.4.4, usearch 2.26.2, cryptography 48.0.1, pydantic 2.13.4, prometheus-client 0.20.0), mem0 644 MB, letta 1.96 GB, honcho-pinned 580 MB plus our stack layer 902 MB total. The flux image pins are new in this repo (the Flux arms need them; compose/flux/Dockerfile).

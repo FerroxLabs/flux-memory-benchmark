@@ -11,7 +11,7 @@ import argparse, asyncio, json, os, re, sys, time
 from datetime import datetime, timedelta, timezone
 import httpx
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import cap, K  # noqa: E402,F401
+from common import cap, K, ledger_add  # noqa: E402,F401
 
 API = os.environ.get('HONCHO_API', 'http://127.0.0.1:18900/v3')
 PROXY_STATS = os.environ.get('DSPROXY_STATS', 'http://127.0.0.1:18901/stats')
@@ -179,18 +179,24 @@ async def main():
                         st['llm_calls'] = c1.get('calls', 0) - c0.get('calls', 0)
                         st['seconds'] = st['wall_s']
                         st['items_total'] = st['messages_posted'] + len(st['errors']); st['items_dropped'] = len(st['errors'])
+                    if st.get('llm_usd'):
+                        ledger_add(os.path.basename(os.path.normpath(a.out)), 'ingest', st['llm_usd'])
+                    q0 = (await proxy_cost(c)).get('cost', 0)
                     rows = {x: [] for x in arms}
                     if not a.ingest_only:
                         for q in u['questions']:
                             res = await retrieve(c, ws, pid, q, arms)
                             for arm, (items, ms, extra) in res.items():
                                 rows[arm].append(mkrow({'ctx': 'honcho_retrieval', 'chat': 'honcho_chat'}[arm], q, items, ms, extra))
+                    q_usd = (await proxy_cost(c)).get('cost', 0) - q0  # retrieval and dialectic calls (exact only at --conc 1)
+                    if q_usd > 0:
+                        ledger_add(os.path.basename(os.path.normpath(a.out)), 'query', q_usd)
                     async with lock:
                         for arm, rs in rows.items():
                             with open(os.path.join(a.out, 'retrieved.jsonl'), 'a') as f:
                                 for r in rs:
                                     f.write(json.dumps(r) + '\n')
-                        open(sp, 'a').write(json.dumps(st) + '\n')
+                        open(sp, 'a').write(json.dumps({**st, 'ingest': st, 'error': None}) + '\n')  # flat fields for runner/ledger.py, nested 'ingest' for analysis/analyze.py
                     print('done', u['unit_id'], st.get('wall_s'), st.get('conclusions'), st['errors'][:1], flush=True)
                 except Exception as e:  # noqa: BLE001
                     print('FAILED', u['unit_id'], repr(e)[:300], flush=True)

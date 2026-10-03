@@ -10,6 +10,8 @@ services:
       POSTGRES_USER: letta
       POSTGRES_PASSWORD: letta-local-only
       POSTGRES_DB: letta
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro   # the wheel's migrations need the vector type to exist
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U letta -d letta"]
       interval: 5s
@@ -23,6 +25,7 @@ services:
       LETTA_PG_URI: postgresql://letta:letta-local-only@pg:5432/letta
       DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:?set DEEPSEEK_API_KEY}
       LETTA_URLS: http://127.0.0.1:8283
+      LEDGER_PATH: /results/ledger.jsonl   # /repo is mounted read-only
       LETTA_LLM_URL: http://127.0.0.1:18801/letta/v1
       EMBED_URLS: http://127.0.0.1:18811/v1
     volumes:
@@ -31,9 +34,9 @@ services:
       - ../../results:/results
       - fastembed-cache:/cache
     command: >
-      sh -c "python infra/embed_server.py 18811 &
-             python infra/dsproxy.py 18801 /results/letta-proxy.log 0 &
-             letta server --host 127.0.0.1 --port 8283"
+      sh -c "python /repo/infra/embed_server.py 18811 &
+             python /repo/infra/dsproxy.py 18801 /results/letta-proxy.log 0 &
+             cd /opt/letta-migrations && alembic upgrade head && cd /tmp && letta server --host 127.0.0.1 --port 8283"
 volumes:
   fastembed-cache:
 networks:

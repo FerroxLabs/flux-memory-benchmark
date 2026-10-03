@@ -26,6 +26,7 @@ services:
     environment:
       DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:?set DEEPSEEK_API_KEY}
       HONCHO_API: http://127.0.0.1:8000/v3
+      LEDGER_PATH: /results/ledger.jsonl   # /repo is mounted read-only
       DSPROXY_STATS: http://127.0.0.1:18901/stats
     volumes:
       - ./config.toml:/app/config.toml:ro
@@ -33,6 +34,7 @@ services:
       - ../../work:/work
       - ../../results:/results
       - fastembed-cache:/cache
+    user: root   # the image runs as "app", which cannot write the bind-mounted /results
     command: ["sh", "/stack.sh"]
 volumes:
   fastembed-cache:

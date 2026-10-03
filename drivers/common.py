@@ -26,6 +26,13 @@ def load_units(path, only=None):
     return units
 
 
+def ledger_add(arm, stage, usd, units=1):
+    """Put a stage's spend on the shared ledger (runner/ledger.py), so the $40 cap sees ingest and query spend as well as reader and judge spend."""
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'runner'))
+    import ledger
+    ledger.add(arm, stage, usd, units)
+
+
 def row(arm, q, items, search_ms, extra=None, capped=True):
     ctx = cap(items) if capped else items
     return {'arm': arm, 'qid': q['qid'], 'type': q['type'], 'question': q['question'], 'question_date': q['question_date'],
@@ -49,6 +56,8 @@ def run_units(fn, units, out_dir, procs, init=None, initargs=()):
         for n, res in enumerate(pool.imap_unordered(_safe, [(fn, u) for u in todo]), 1):
             with open(done_path, 'a') as f:
                 f.write(json.dumps({'unit_id': res['unit_id'], 'ingest': res.get('ingest'), 'error': res.get('error')}) + '\n')
+            if (res.get('ingest') or {}).get('llm_usd'):
+                ledger_add(os.path.basename(os.path.normpath(out_dir)), 'ingest', res['ingest']['llm_usd'])
             if res.get('rows'):
                 with open(os.path.join(out_dir, 'retrieved.jsonl'), 'a') as f:
                     for r in res['rows']:

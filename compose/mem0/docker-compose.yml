@@ -10,6 +10,7 @@ services:
     environment:
       DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:?set DEEPSEEK_API_KEY}
       MEM0_LLM_MODEL: deepseek-flash
+      LEDGER_PATH: /results/ledger.jsonl   # /repo is mounted read-only
       EMBED_URLS: http://127.0.0.1:18811/v1
     volumes:
       - ../../:/repo:ro

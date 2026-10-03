@@ -67,6 +67,7 @@ def one(u):
     from src.flux_memory.retrieval import (RECALL_NEIGHBOURS, DenseIndex, HybridConfig, fts_expression, hybrid_order,
                                            lexical_terms, rerank)
     from src.flux_memory.store import MemoryStore
+    t_ingest = time.time()
     qs = [q for q in u['questions'] if QIDS is None or q['qid'] in QIDS]
     if not qs:
         return {'unit_id': u['unit_id'], 'ingest': {'skipped': True}, 'rows': []}
@@ -92,6 +93,7 @@ def one(u):
                            'source_id': f"{u['unit_id']}__s{si}__t{f['turn']}", 'revision': 1,
                            'supports': [f"{u['unit_id']}__s{si}__t{x}" for x in f.get('turns', [f['turn']])]})
     cache = os.environ.get('EMB_CACHE', 'work/emb'); os.makedirs(cache, exist_ok=True)
+    emb_cached = os.path.exists(os.path.join(cache, f"{u['unit_id']}.npy"))
     vecs = cached(os.path.join(cache, f"{u['unit_id']}.npy"), [r['text'] for r in recs])
     idx = LexicalIndex(1)
     idx.apply([{'source_id': r['source_id'], 'erased': False, 'expires_at': None, 'created_at': r['created_at'], 'text': r['text'],
@@ -103,6 +105,7 @@ def one(u):
         fv = cached(os.path.join(cache, f"{u['unit_id']}.facts-{len(fitems)}.npy"), [f['text'] for f in fitems])
         fentry = _FactEntry(epoch=1, dim=fv.shape[1])
         fentry.add(fitems, list(fv))
+    ingest_s = time.time() - t_ingest  # turn embedding (or cache read) plus lexical and dense index build; excludes fact extraction (own ledger line)
     qvecs = EMB.embed([q['question'] for q in qs], query=True).astype(np.float32)
     out = []
     for qi, q in enumerate(qs):
@@ -191,7 +194,7 @@ def one(u):
                         'fact_rank': [[f['id'], f['source_id']] for f in frank] if arm['kind'] == 'evidence' else [],
                         'branch': ('advice' if advice else 'agg' if agg else 'evidence') if arm['kind'] == 'evidence' else arm['kind']})
     idx.close()
-    return {'unit_id': u['unit_id'], 'ingest': {'turns': len(recs), 'facts': len(fitems)}, 'rows': out}
+    return {'unit_id': u['unit_id'], 'ingest': {'turns': len(recs), 'facts': len(fitems), 'seconds': round(ingest_s, 1), 'llm_usd': 0.0, 'emb_cached': emb_cached}, 'rows': out}
 
 
 def main(arm_kind):

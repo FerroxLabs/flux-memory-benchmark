@@ -302,3 +302,97 @@ It does not show:
 - LongMemEval: the kit's documentation does not state a licence for the data and says to decide before publishing whether model-answer excerpts are acceptable. Per-item LongMemEval outputs are therefore stripped the same way (`results-public/lme/`); the full files are kept out of git.
 - Honcho is AGPL-3.0; this repository contains no Honcho source, only a driver that calls its HTTP API and our `config.toml`.
 - Reproduce the tables: `python3 analysis/make_public.py` (strip full outputs, needs `results/`) and `python3 analysis/report.py` (needs only `results-public/`).
+
+## Exploratory arm added after the main run: flux_reason
+
+This section is separate from everything above. The arm `flux_reason` was designed on 2026-10-04, **after** the main results were known, and preregistered in [PREREG-ADDENDUM-flux_reason.md](PREREG-ADDENDUM-flux_reason.md) (committed and pushed before the arm's first paid call; the prompt `prompts/flux_reason_prompt.txt` has sha256 `e52763d7923ce70d44df52b3fd37f5fbee5bd07f0c1e1fc6d6a56e62ede04e4f`). It is exploratory, not part of the preregistered comparison, and no number in the sections above was changed by it.
+
+What it is: for each question, one `deepseek-flash` call (thinking disabled, temperature 0, max 1,500 tokens) reads the context the `flux_evidence` arm already retrieved in the main run (stored, not re-retrieved, not re-ingested) and writes a short memory note; the unchanged reader and judges then see only that note as a single context item, the way `honcho_chat` hands Honcho's answer to the reader. One run, no re-rolls, failures scored wrong, same question sets. It ran on the main run's host.
+
+<!-- GEN:reason -->
+**Accuracy** (reference arms are the main run's numbers, repeated here for comparison only)
+
+**LongMemEval-S (n=100)**
+
+| Arm | Correct / n | Accuracy % | Wilson 95% | Errors | Empty |
+|---|---|---|---|---|---|
+| flux_reason | 80/100 | 80.0 | 71.1 to 86.7 | 0 | 0 |
+| flux_evidence | 91/100 | 91.0 | 83.8 to 95.2 | 0 | 1 |
+| flux_public | 84/100 | 84.0 | 75.6 to 89.9 | 0 | 1 |
+| honcho_chat | 81/100 | 81.0 | 72.2 to 87.5 | 0 | 0 |
+
+**LoCoMo categories 1-4 (n=1540, preregistered headline)**
+
+| Arm | Correct / n | Accuracy % | Wilson 95% | Errors | Empty |
+|---|---|---|---|---|---|
+| flux_reason | 1129/1540 | 73.3 | 71.0 to 75.5 | 0 | 1 |
+| flux_evidence | 1085/1540 | 70.5 | 68.1 to 72.7 | 1 | 3 |
+| flux_public | 1088/1540 | 70.6 | 68.3 to 72.9 | 2 | 7 |
+| honcho_chat | 1291/1540 | 83.8 | 81.9 to 85.6 | 0 | 0 |
+
+**LoCoMo category 5 adversarial (n=446)**
+
+| Arm | Correct / n | Accuracy % | Wilson 95% | Errors | Empty |
+|---|---|---|---|---|---|
+| flux_reason | 426/446 | 95.5 | 93.2 to 97.1 | 0 | 0 |
+| flux_evidence | 391/446 | 87.7 | 84.3 to 90.4 | 0 | 0 |
+| flux_public | 399/446 | 89.5 | 86.3 to 92.0 | 0 | 0 |
+| honcho_chat | 409/446 | 91.7 | 88.8 to 93.9 | 0 | 0 |
+
+**Paired differences.** Difference = flux_reason minus the other arm, percentage points (positive favours flux_reason), on identical items. Bootstrap: 10,000 resamples, seed 20261003. Holm is applied across these 3 comparisons within each item set; these tests stand on their own and are not part of the main report's Holm family.
+
+**LongMemEval-S (n=100)**
+
+| Other arm | Diff pts | Item bootstrap 95% | flux_reason only right | Other only right | McNemar p | Holm p |
+|---|---|---|---|---|---|---|
+| flux_evidence | -11.0 | -17.0 to -5.0 | 0 | 11 | 0.0009766 | 0.00293 |
+| flux_public | -4.0 | -11.0 to +3.0 | 5 | 9 | 0.424 | 0.8479 |
+| honcho_chat | -1.0 | -9.0 to +8.0 | 9 | 10 | 1 | 1 |
+
+**LoCoMo categories 1-4 (n=1540, preregistered headline)**
+
+| Other arm | Diff pts | Item bootstrap 95% | Conversation-clustered 95% | flux_reason only right | Other only right | McNemar p | Holm p |
+|---|---|---|---|---|---|---|---|
+| flux_evidence | +2.9 | +0.6 to +5.1 | -0.2 to +6.2 | 176 | 132 | 0.01415 | 0.0283 |
+| flux_public | +2.7 | +0.4 to +4.9 | -0.6 to +6.2 | 182 | 141 | 0.02588 | 0.0283 |
+| honcho_chat | -10.5 | -12.7 to -8.4 | -12.5 to -8.3 | 70 | 232 | 1.953e-21 | 5.86e-21 |
+
+**LoCoMo category 5 adversarial (n=446)**
+
+| Other arm | Diff pts | Item bootstrap 95% | Conversation-clustered 95% | flux_reason only right | Other only right | McNemar p | Holm p |
+|---|---|---|---|---|---|---|---|
+| flux_evidence | +7.8 | +5.2 to +10.8 | +5.8 to +9.5 | 40 | 5 | 7.878e-08 | 2.364e-07 |
+| flux_public | +6.1 | +3.4 to +9.0 | +2.9 to +8.4 | 34 | 7 | 2.532e-05 | 5.064e-05 |
+| honcho_chat | +3.8 | +1.3 to +6.3 | +1.9 to +5.8 | 24 | 7 | 0.003327 | 0.003327 |
+
+**LoCoMo, per category** (correct/n, accuracy %)
+
+| Arm | cat1-multi-hop (n=282) | cat2-temporal (n=321) | cat3-open-domain (n=96) | cat4-single-hop (n=841) | cat5-adversarial (n=446) |
+|---|---|---|---|---|---|
+| flux_reason | 158/282 56.0 | 232/321 72.3 | 38/96 39.6 | 701/841 83.4 | 426/446 95.5 |
+| flux_evidence | 153/282 54.3 | 141/321 43.9 | 53/96 55.2 | 738/841 87.8 | 391/446 87.7 |
+| flux_public | 149/282 52.8 | 146/321 45.5 | 56/96 58.3 | 737/841 87.6 | 399/446 89.5 |
+| honcho_chat | 203/282 72.0 | 276/321 86.0 | 59/96 61.5 | 753/841 89.5 | 409/446 91.7 |
+
+**LongMemEval-S, per question type** (correct/n, accuracy %; cells of 6 to 27 questions, not tested)
+
+| Arm | knowledge-update (n=15) | multi-session (n=27) | single-session-assistant (n=11) | single-session-preference (n=6) | single-session-user (n=14) | temporal-reasoning (n=27) |
+|---|---|---|---|---|---|---|
+| flux_reason | 12/15 80 | 17/27 63 | 10/11 91 | 4/6 67 | 14/14 100 | 23/27 85 |
+| flux_evidence | 14/15 93 | 22/27 81 | 11/11 100 | 5/6 83 | 14/14 100 | 25/27 93 |
+| flux_public | 10/15 67 | 18/27 67 | 11/11 100 | 6/6 100 | 14/14 100 | 25/27 93 |
+| honcho_chat | 12/15 80 | 15/27 56 | 11/11 100 | 6/6 100 | 14/14 100 | 23/27 85 |
+
+**Verdict against the preregistered threshold** (within 5.0 points of honcho_chat on LoCoMo categories 1 to 4, that is at least 1214 of 1540 correct): flux_reason scored 1129/1540 (73.3%), honcho_chat 1291/1540 (83.8%), flux_evidence 1085/1540 (70.5%). Gap to honcho_chat: -10.5 points; share of the honcho_chat minus flux_evidence gap closed: 21%. Verdict: **does not close most of the gap**.
+
+**Cost and failures** (USD; pass 1 = the reasoning call, pass 2 = reader plus judge, both from the arm's own summaries)
+
+| Bench | Pass 1 | Pass 2 reader | Pass 2 judge | Arm total | Pass-1 failures | Empty notes | Rows scored as error | Empty reader answers |
+|---|---|---|---|---|---|---|---|---|
+| LongMemEval-S | 0.0726 | 0.0421 | 0.0090 | 0.1237 | 0 | 0 | 0 | 0 |
+| LoCoMo | 0.7715 | 0.5370 | 0.2757 | 1.5842 | 0 | 0 | 0 | 1 |
+
+Arm total 1.7079 USD from the summaries; ledger lines for the arm (`results-public/ledger-flux_reason.jsonl`) sum to 1.7079 USD against the arm's cap of 10 USD. The qa summaries record prompt_sha256 `cb2ed8ffeaf930b7...` (LongMemEval) and `f0ce4540d38d093a...` (LoCoMo), equal to the honcho_chat arm's: yes.
+<!-- /GEN:reason -->
+
+**What this arm shows and does not show.** On LoCoMo categories 1 to 4, one reasoning pass over the stored `flux_evidence` retrieval raised accuracy from 70.5% to 73.3% (+2.9 points; item interval +0.6 to +5.1, conversation-clustered interval -0.2 to +6.2, so the gain is small and not clearly separated from zero once the 10 conversations are treated as the units), and closed about a fifth of the 13.4-point gap to `honcho_chat` (83.8%); it ended 10.5 points below `honcho_chat`, so by the threshold stated before the run (within 5.0 points) it does not close most of the gap. The gain was uneven: temporal questions (category 2) rose from 43.9% to 72.3% and multi-hop (category 1) moved little (54.3% to 56.0%), while open-domain (category 3) fell from 55.2% to 39.6% and single-hop (category 4) fell from 87.8% to 83.4%; adversarial category 5 rose from 87.7% to 95.5% (string rule; it was reported separately and is not part of the verdict). On LongMemEval-S (n=100) it scored 80%, 11 points below `flux_evidence` (91%, paired p 0.001), 4 below `flux_public` and 1 below `honcho_chat`, so there the note step lost information that the full 32 KiB context kept; n=100 can only resolve large gaps. What it does not show: it reuses the stored `flux_evidence` retrieval, so any evidence that retrieval missed stays missing; it is a single reasoning pass with no multi-step search or query rewriting, which is what the Honcho dialectic agent does with its own tools, so it is not a test of an agentic Flux; Flux ran in-process, not through the hosted API; the prompt was written after the main results were known (one prompt, not tuned; no variants were tried), and temperature and max tokens could not be matched to Honcho's unrecorded values; one run, so the run-to-run noise of the reasoning pass is not measured; and the category-level pattern was not investigated, so the reasons for the category 3 and category 4 drops are not known. It does not show that a better reasoning prompt, a stronger reasoning model or an agentic loop over Flux memory would or would not close the gap.

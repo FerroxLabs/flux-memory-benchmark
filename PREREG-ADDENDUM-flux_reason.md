@@ -49,4 +49,4 @@ On the main run's host (the judge key exists only there), from a copy of this ki
 
 ## Changes after prereg
 
-None yet.
+None. The smoke (5 LongMemEval and 10 LoCoMo questions) showed no harness bug; the full run used the committed `drivers/flux_reason.py` and prompt unchanged. The smoke items were reused as-is in the full run. Results are in REPORT.md, section "Exploratory arm added after the main run: flux_reason".

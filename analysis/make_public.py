@@ -48,5 +48,30 @@ def main():
                         f.write(json.dumps(row, sort_keys=True) + '\n')
 
 
+def exploratory():
+    """The arm added after the main run (PREREG-ADDENDUM-flux_reason.md): same stripped fields plus the pass-1 cost, taken from its retrieved.jsonl
+    (the note text is never copied). Its ledger lines go to results-public/ledger-flux_reason.jsonl. Skipped when the arm has not run."""
+    arm, led = 'flux_reason', []
+    for bench, rel in BENCH_DIR.items():
+        d = os.path.join(ROOT, rel, arm)
+        items = jl(os.path.join(d, 'qa', 'answers.jsonl'))
+        if not items:
+            continue
+        p1 = {r['qid']: r for r in jl(os.path.join(d, 'retrieved.jsonl'))}
+        os.makedirs(os.path.join(ROOT, 'results-public', bench), exist_ok=True)
+        with open(os.path.join(ROOT, 'results-public', bench, arm + '.jsonl'), 'w') as f:
+            for r in sorted(items, key=lambda r: r['qid']):
+                o = strip_item(r)
+                o['pass1_cost'] = (p1.get(r['qid']) or {}).get('pass1_cost')
+                o['pass1_empty'] = bool((p1.get(r['qid']) or {}).get('pass1_empty'))
+                f.write(json.dumps(o, sort_keys=True) + '\n')
+    led = [r for r in jl(os.path.join(ROOT, 'results', 'ledger.jsonl')) if r.get('arm') == arm]
+    if led:
+        with open(os.path.join(ROOT, 'results-public', 'ledger-flux_reason.jsonl'), 'w') as f:
+            for r in led:
+                f.write(json.dumps(r, sort_keys=True) + '\n')
+
+
 if __name__ == '__main__':
     main()
+    exploratory()

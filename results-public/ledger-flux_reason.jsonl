@@ -1,0 +1,17 @@
+{"arm": "flux_reason", "bench": "lme", "stage": "pass1", "ts": 1791070646.9689176, "units": 5, "usd": 0.003635}
+{"arm": "flux_reason", "bench": "lme", "stage": "qa", "ts": 1791070656.9010475, "units": 5, "usd": 0.001868}
+{"arm": "flux_reason", "bench": "locomo", "stage": "pass1", "ts": 1791070663.467828, "units": 10, "usd": 0.003696}
+{"arm": "flux_reason", "bench": "locomo", "stage": "qa", "ts": 1791070680.4455597, "units": 10, "usd": 0.004068}
+{"arm": "flux_reason", "bench": "lme", "stage": "pass1", "ts": 1791070749.9905157, "units": 95, "usd": 0.068963}
+{"arm": "flux_reason", "bench": "lme", "stage": "qa", "ts": 1791070948.1933498, "units": 95, "usd": 0.049281}
+{"arm": "flux_reason", "bench": "locomo", "stage": "pass1", "ts": 1791071984.1978989, "units": 1976, "usd": 0.767773}
+{"arm": "flux_reason", "bench": "locomo", "stage": "qa", "ts": 1791072313.1796658, "units": 190, "usd": 0.083309}
+{"arm": "flux_reason", "bench": "locomo", "stage": "qa", "ts": 1791072621.5999959, "units": 200, "usd": 0.080008}
+{"arm": "flux_reason", "bench": "locomo", "stage": "qa", "ts": 1791072971.0619073, "units": 200, "usd": 0.093765}
+{"arm": "flux_reason", "bench": "locomo", "stage": "qa", "ts": 1791073221.7989876, "units": 200, "usd": 0.062758}
+{"arm": "flux_reason", "bench": "locomo", "stage": "qa", "ts": 1791073575.1864455, "units": 200, "usd": 0.084262}
+{"arm": "flux_reason", "bench": "locomo", "stage": "qa", "ts": 1791073880.6272836, "units": 200, "usd": 0.079048}
+{"arm": "flux_reason", "bench": "locomo", "stage": "qa", "ts": 1791074219.2417047, "units": 200, "usd": 0.088257}
+{"arm": "flux_reason", "bench": "locomo", "stage": "qa", "ts": 1791074541.2291865, "units": 200, "usd": 0.081509}
+{"arm": "flux_reason", "bench": "locomo", "stage": "qa", "ts": 1791074852.198144, "units": 200, "usd": 0.081838}
+{"arm": "flux_reason", "bench": "locomo", "stage": "qa", "ts": 1791075137.4916017, "units": 186, "usd": 0.073895}

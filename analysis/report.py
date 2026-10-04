@@ -245,8 +245,104 @@ def blocks(D):
     for name, (bench, qids) in S.items():
         acc.append(f'**{name}**\n\n' + acc_table(D, name, bench, qids) + '\n')
     pair = '\n\n'.join(paired_table(D, n, b, q) for n, (b, q) in S.items())
-    return {'key_findings': key_findings(D), 'accuracy': '\n'.join(acc), 'paired': pair, 'categories': cat_tables(D), 'cost': cost_table(D),
-            'ingest': ingest_table(), 'honcho_month': honcho_month(D)}
+    out = {'key_findings': key_findings(D), 'accuracy': '\n'.join(acc), 'paired': pair, 'categories': cat_tables(D), 'cost': cost_table(D),
+           'ingest': ingest_table(), 'honcho_month': honcho_month(D)}
+    R = load_reason(D)
+    if R:
+        out['reason'] = reason_block(D, R)
+    return out
+
+
+# ---------- exploratory arm added after the main run (PREREG-ADDENDUM-flux_reason.md); nothing above this line reads it ----------
+REASON = 'flux_reason'
+REF = ['flux_evidence', 'flux_public', 'honcho_chat']
+REASON_THRESHOLD = 1214  # preregistered: within 5.0 points of honcho_chat on LoCoMo categories 1-4 = at least 1,214 of 1,540 correct
+
+
+def load_reason(D):
+    """-> {bench: {qid: stripped row}} or None when the arm has not been added (the main report is unchanged)."""
+    R = {b: {r['qid']: r for r in jl(os.path.join(PUB, b, REASON + '.jsonl'))} for b in ('lme', 'locomo')}
+    if not all(R.values()):
+        return None
+    for b in R:
+        assert set(R[b]) == set(D[b]['flux_public']), f'{b}: {REASON} does not cover identical items'
+    return R
+
+
+def reason_summ(bench):
+    p = os.path.join(PUB, 'run-logs', f'qa-{bench}-{REASON}.out')
+    return json.loads([l for l in open(p) if l.startswith('{')][-1])
+
+
+def reason_block(D, R):
+    S = item_sets(D)
+    sets = [(n, b, q) for n, (b, q) in S.items() if not n.startswith('LoCoMo all five')]
+    L = []
+    L.append('**Accuracy** (reference arms are the main run\'s numbers, repeated here for comparison only)\n')
+    for name, bench, qids in sets:
+        L.append(f'**{name}**\n')
+        L.append('| Arm | Correct / n | Accuracy % | Wilson 95% | Errors | Empty |')
+        L.append('|---|---|---|---|---|---|')
+        for a in [REASON] + REF:
+            src = R[bench] if a == REASON else D[bench][a]
+            rows = [src[q] for q in qids]
+            k = sum(r['correct'] for r in rows)
+            lo, hi = analyze.wilson(k, len(rows))
+            L.append(f"| {a} | {k}/{len(rows)} | {pc(k / len(rows))} | {pc(lo)} to {pc(hi)} | {sum(1 for r in rows if r['verdict'] == 'error')} | {sum(1 for r in rows if r['verdict'] == 'empty')} |")
+        L.append('')
+    # paired
+    L.append(f'**Paired differences.** Difference = {REASON} minus the other arm, percentage points (positive favours {REASON}), on identical items. Bootstrap: 10,000 resamples, seed {SEED}. Holm is applied across these 3 comparisons within each item set; these tests stand on their own and are not part of the main report\'s Holm family.\n')
+    for name, bench, qids in sets:
+        conv = [q.split('__')[0] for q in qids] if bench == 'locomo' else None
+        L.append(f'**{name}**\n')
+        hdr = f'| Other arm | Diff pts | Item bootstrap 95% | ' + ('Conversation-clustered 95% | ' if conv else '') + f'{REASON} only right | Other only right | McNemar p | Holm p |'
+        L += [hdr, '|' + '---|' * (hdr.count('|') - 1)]
+        res = []
+        for oa in REF:
+            f = {q: R[bench][q]['correct'] for q in qids}
+            o = {q: D[bench][oa][q]['correct'] for q in qids}
+            x, y, p = analyze.mcnemar_exact(f, o, qids)
+            d = np.array([f[q] - o[q] for q in qids], dtype=float)
+            res.append((oa, d.mean(), boot_iid(d), boot_cluster(d, conv) if conv else None, x, y, p))
+        adj = analyze.holm({r[0]: r[6] for r in res})
+        for oa, m, bi, bc, x, y, p in res:
+            L.append(f'| {oa} | {pm(m)} | {pm(bi[0])} to {pm(bi[1])} | ' + (f'{pm(bc[0])} to {pm(bc[1])} | ' if conv else '') + f'{x} | {y} | {p:.4g} | {adj[oa]:.4g} |')
+        L.append('')
+    # categories and types
+    lo = D['locomo']; q0 = sorted(lo['flux_public']); cnt = collections.Counter(lo['flux_public'][q]['type'] for q in q0)
+    L.append('**LoCoMo, per category** (correct/n, accuracy %)\n')
+    L.append('| Arm | ' + ' | '.join(f'{c} (n={cnt[c]})' for c in CATS) + ' |'); L.append('|---|' + '---|' * len(CATS))
+    for a in [REASON] + REF:
+        src = R['locomo'] if a == REASON else lo[a]
+        L.append(f'| {a} | ' + ' | '.join(f"{sum(src[q]['correct'] for q in q0 if src[q]['type'] == c)}/{cnt[c]} {pc(sum(src[q]['correct'] for q in q0 if src[q]['type'] == c) / cnt[c])}" for c in CATS) + ' |')
+    lm = D['lme']; q1 = sorted(lm['flux_public']); types = sorted({lm['flux_public'][q]['type'] for q in q1}); cnt = collections.Counter(lm['flux_public'][q]['type'] for q in q1)
+    L.append('\n**LongMemEval-S, per question type** (correct/n, accuracy %; cells of 6 to 27 questions, not tested)\n')
+    L.append('| Arm | ' + ' | '.join(f'{t} (n={cnt[t]})' for t in types) + ' |'); L.append('|---|' + '---|' * len(types))
+    for a in [REASON] + REF:
+        src = R['lme'] if a == REASON else lm[a]
+        L.append(f'| {a} | ' + ' | '.join(f"{sum(src[q]['correct'] for q in q1 if src[q]['type'] == t)}/{cnt[t]} {pc(sum(src[q]['correct'] for q in q1 if src[q]['type'] == t) / cnt[t], 0)}" for t in types) + ' |')
+    # verdict
+    q14 = S[[n for n in S if n.startswith('LoCoMo categories 1-4')][0]][1]
+    k = sum(R['locomo'][q]['correct'] for q in q14)
+    kh = sum(D['locomo']['honcho_chat'][q]['correct'] for q in q14)
+    ke = sum(D['locomo']['flux_evidence'][q]['correct'] for q in q14)
+    closed = (kh - ke) and (k - ke) / (kh - ke)
+    L.append(f'\n**Verdict against the preregistered threshold** (within 5.0 points of honcho_chat on LoCoMo categories 1 to 4, that is at least {REASON_THRESHOLD} of {len(q14)} correct): {REASON} scored {k}/{len(q14)} ({pc(k / len(q14))}%), honcho_chat {kh}/{len(q14)} ({pc(kh / len(q14))}%), flux_evidence {ke}/{len(q14)} ({pc(ke / len(q14))}%). '
+             f'Gap to honcho_chat: {pm((k - kh) / len(q14))} points; share of the honcho_chat minus flux_evidence gap closed: {pc(closed, 0)}%. Verdict: **{"closes most of the gap" if k >= REASON_THRESHOLD else "does not close most of the gap"}**.')
+    # cost and errors
+    L.append('\n**Cost and failures** (USD; pass 1 = the reasoning call, pass 2 = reader plus judge, both from the arm\'s own summaries)\n')
+    L.append('| Bench | Pass 1 | Pass 2 reader | Pass 2 judge | Arm total | Pass-1 failures | Empty notes | Rows scored as error | Empty reader answers |')
+    L.append('|---|---|---|---|---|---|---|---|---|')
+    tot = 0.0
+    for bench, title in (('lme', 'LongMemEval-S'), ('locomo', 'LoCoMo')):
+        s = reason_summ(bench); t = s['pass1_usd'] + s['reader_usd'] + s['judge_usd']; tot += t
+        emp = sum(1 for r in R[bench].values() if r['verdict'] == 'empty')
+        L.append(f"| {title} | {s['pass1_usd']:.4f} | {s['reader_usd']:.4f} | {s['judge_usd']:.4f} | {t:.4f} | {s['pass1_errors']} | {s['pass1_empty_notes']} | {s['errors']} | {emp} |")
+    led = jl(os.path.join(PUB, 'ledger-flux_reason.jsonl'))
+    L.append(f"\nArm total {tot:.4f} USD from the summaries; ledger lines for the arm (`results-public/ledger-flux_reason.jsonl`) sum to {sum(r['usd'] for r in led):.4f} USD against the arm's cap of 10 USD. "
+             f"The qa summaries record prompt_sha256 `{reason_summ('lme')['prompt_sha256'][:16]}...` (LongMemEval) and `{reason_summ('locomo')['prompt_sha256'][:16]}...` (LoCoMo), equal to the honcho_chat arm's: "
+             f"{'yes' if reason_summ('lme')['prompt_sha256'] == summ('lme', 'honcho_chat')['prompt_sha256'] and reason_summ('locomo')['prompt_sha256'] == summ('locomo', 'honcho_chat')['prompt_sha256'] else 'NO'}.")
+    return '\n'.join(L)
 
 
 def splice(path, blks, only=None):

@@ -1,0 +1,1 @@
+{"arm": "flux_reason", "n": 100, "expected": 100, "accuracy": 0.8, "errors": 0, "reader_usd": 0.0421, "judge_usd": 0.009, "pass1_usd": 0.0726, "pass1_errors": 0, "pass1_empty_notes": 0, "offmodel": [], "prompt_sha256": "cb2ed8ffeaf930b7bf47b0fbf52fabca91b82c785e148475cdd535c9f4dc6edb", "bench": "lme", "judge_models": ["gpt-5-mini-2025-08-07", "gpt-6-astra"]}

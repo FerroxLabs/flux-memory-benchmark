@@ -72,6 +72,29 @@ def exploratory():
                 f.write(json.dumps(r, sort_keys=True) + '\n')
 
 
+def exploratory_temporal():
+    """The arm added after flux_reason (PREREG-ADDENDUM-flux_temporal.md): composed rows from results/<bench>/flux_temporal/qa/answers.jsonl (built by
+    drivers/flux_temporal.py compose), stripped like every other arm, plus the routed label (TEMPORAL / OTHER / UNPARSEABLE / ERROR), the path taken,
+    the router cost and the path cost. No question text, gold answer, context or model answer is copied. Skipped when the arm has not run."""
+    arm = 'flux_temporal'
+    for bench, rel in BENCH_DIR.items():
+        items = jl(os.path.join(ROOT, rel, arm, 'qa', 'answers.jsonl'))
+        if not items:
+            continue
+        os.makedirs(os.path.join(ROOT, 'results-public', bench), exist_ok=True)
+        with open(os.path.join(ROOT, 'results-public', bench, arm + '.jsonl'), 'w') as f:
+            for r in sorted(items, key=lambda r: r['qid']):
+                o = strip_item(r)
+                o.update(routed=r['routed'], path=r['path'], router_cost=r['router_cost'], path_cost=r['path_cost'])
+                f.write(json.dumps(o, sort_keys=True) + '\n')
+    led = [r for r in jl(os.path.join(ROOT, 'results', 'ledger.jsonl')) if r.get('arm') == arm]
+    if led:
+        with open(os.path.join(ROOT, 'results-public', 'ledger-flux_temporal.jsonl'), 'w') as f:
+            for r in led:
+                f.write(json.dumps(r, sort_keys=True) + '\n')
+
+
 if __name__ == '__main__':
     main()
     exploratory()
+    exploratory_temporal()

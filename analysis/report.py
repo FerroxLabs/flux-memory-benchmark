@@ -250,6 +250,9 @@ def blocks(D):
     R = load_reason(D)
     if R:
         out['reason'] = reason_block(D, R)
+        T = load_temporal(D)
+        if T:
+            out['temporal'] = temporal_block(D, R, T)
     return out
 
 
@@ -342,6 +345,104 @@ def reason_block(D, R):
     L.append(f"\nArm total {tot:.4f} USD from the summaries; ledger lines for the arm (`results-public/ledger-flux_reason.jsonl`) sum to {sum(r['usd'] for r in led):.4f} USD against the arm's cap of 10 USD. "
              f"The qa summaries record prompt_sha256 `{reason_summ('lme')['prompt_sha256'][:16]}...` (LongMemEval) and `{reason_summ('locomo')['prompt_sha256'][:16]}...` (LoCoMo), equal to the honcho_chat arm's: "
              f"{'yes' if reason_summ('lme')['prompt_sha256'] == summ('lme', 'honcho_chat')['prompt_sha256'] and reason_summ('locomo')['prompt_sha256'] == summ('locomo', 'honcho_chat')['prompt_sha256'] else 'NO'}.")
+    return '\n'.join(L)
+
+
+# ---------- exploratory arm flux_temporal (PREREG-ADDENDUM-flux_temporal.md); exploratory, post hoc, in-sample ----------
+TEMP = 'flux_temporal'
+BAR_I, BAR_II, BAR_III = 4.0, -2.0, -2.0  # points; preregistered
+
+
+def load_temporal(D):
+    T = {b: {r['qid']: r for r in jl(os.path.join(PUB, b, TEMP + '.jsonl'))} for b in ('lme', 'locomo')}
+    if not all(T.values()):
+        return None
+    for b in T:
+        assert set(T[b]) == set(D[b]['flux_public']), f'{b}: {TEMP} does not cover identical items'
+    return T
+
+
+def temporal_block(D, R, T):
+    S = item_sets(D)
+    sets = [(n, b, q) for n, (b, q) in S.items() if not n.startswith('LoCoMo all five')]
+    REFT = ['flux_evidence', 'flux_public', 'flux_reason', 'honcho_chat']
+
+    def arm(a, bench):
+        return T[bench] if a == TEMP else (R[bench] if a == 'flux_reason' else D[bench][a])
+    L = ['**Accuracy** (reference arms are earlier numbers, repeated here for comparison only; this arm is in-sample, see the caution above)\n']
+    for name, bench, qids in sets:
+        L += [f'**{name}**\n', '| Arm | Correct / n | Accuracy % | Wilson 95% | Errors | Empty |', '|---|---|---|---|---|---|']
+        for a in [TEMP] + REFT:
+            rows = [arm(a, bench)[q] for q in qids]
+            k = sum(r['correct'] for r in rows)
+            lo, hi = analyze.wilson(k, len(rows))
+            L.append(f"| {a} | {k}/{len(rows)} | {pc(k / len(rows))} | {pc(lo)} to {pc(hi)} | {sum(1 for r in rows if r['verdict'] == 'error')} | {sum(1 for r in rows if r['verdict'] == 'empty')} |")
+        L.append('')
+    L.append(f'**Paired differences.** Difference = {TEMP} minus the other arm, percentage points (positive favours {TEMP}), on identical items. Bootstrap: 10,000 resamples, seed {SEED}. Holm is applied across these 4 comparisons within each item set; these tests stand on their own and are not part of the main report\'s Holm family. {TEMP} is a composition of stored {REASON} and flux_evidence results, so it overlaps both by construction.\n')
+    stat = {}
+    for name, bench, qids in sets:
+        conv = [q.split('__')[0] for q in qids] if bench == 'locomo' else None
+        L.append(f'**{name}**\n')
+        hdr = '| Other arm | Diff pts | Item bootstrap 95% | ' + ('Conversation-clustered 95% | ' if conv else '') + f'{TEMP} only right | Other only right | McNemar p | Holm p |'
+        L += [hdr, '|' + '---|' * (hdr.count('|') - 1)]
+        res = []
+        for oa in REFT:
+            f = {q: T[bench][q]['correct'] for q in qids}
+            o = {q: arm(oa, bench)[q]['correct'] for q in qids}
+            x, y, p = analyze.mcnemar_exact(f, o, qids)
+            d = np.array([f[q] - o[q] for q in qids], dtype=float)
+            res.append((oa, d.mean(), boot_iid(d), boot_cluster(d, conv) if conv else None, x, y, p))
+        adj = analyze.holm({r[0]: r[6] for r in res})
+        for oa, m, bi, bc, x, y, p in res:
+            stat[(name, oa)] = (m, bi, bc)
+            L.append(f'| {oa} | {pm(m)} | {pm(bi[0])} to {pm(bi[1])} | ' + (f'{pm(bc[0])} to {pm(bc[1])} | ' if conv else '') + f'{x} | {y} | {p:.4g} | {adj[oa]:.4g} |')
+        L.append('')
+    lo = D['locomo']; q0 = sorted(lo['flux_public']); cnt = collections.Counter(lo['flux_public'][q]['type'] for q in q0)
+    L.append('**LoCoMo, per category** (correct/n, accuracy %)\n')
+    L += ['| Arm | ' + ' | '.join(f'{c} (n={cnt[c]})' for c in CATS) + ' |', '|---|' + '---|' * len(CATS)]
+    catacc = {}
+    for a in [TEMP] + REFT:
+        src = arm(a, 'locomo'); cells = []
+        for c in CATS:
+            k = sum(src[q]['correct'] for q in q0 if src[q]['type'] == c); catacc[(a, c)] = k / cnt[c]
+            cells.append(f'{k}/{cnt[c]} {pc(k / cnt[c])}')
+        L.append(f'| {a} | ' + ' | '.join(cells) + ' |')
+    lm = D['lme']; q1 = sorted(lm['flux_public']); types = sorted({lm['flux_public'][q]['type'] for q in q1}); tc = collections.Counter(lm['flux_public'][q]['type'] for q in q1)
+    L.append('\n**LongMemEval-S, per question type** (correct/n, accuracy %; cells of 6 to 27 questions, not tested)\n')
+    L += ['| Arm | ' + ' | '.join(f'{t} (n={tc[t]})' for t in types) + ' |', '|---|' + '---|' * len(types)]
+    for a in [TEMP] + REFT:
+        src = arm(a, 'lme')
+        L.append(f'| {a} | ' + ' | '.join(f"{sum(src[q]['correct'] for q in q1 if src[q]['type'] == t)}/{tc[t]} {pc(sum(src[q]['correct'] for q in q1 if src[q]['type'] == t) / tc[t], 0)}" for t in types) + ' |')
+    # router readouts
+    L.append('\n**Router readouts** (reported only, no bar; the category and type labels were never shown to the router and are used here after the run)\n')
+    L += ['| Item set | Routed TEMPORAL | Share | Truth label | True positives | Precision % | Recall % | Unparseable | Failed calls |', '|---|---|---|---|---|---|---|---|---|']
+    for name, bench, qids, truth, tname in [('LongMemEval-S (n=100)', 'lme', q1, lambda q: lm['flux_public'][q]['type'] == 'temporal-reasoning', 'type temporal-reasoning'),
+                                            ('LoCoMo categories 1-4', 'locomo', S[[n for n in S if n.startswith('LoCoMo categories 1-4')][0]][1], lambda q: lo['flux_public'][q]['type'] == 'cat2-temporal', 'category 2'),
+                                            ('LoCoMo all five categories', 'locomo', q0, lambda q: lo['flux_public'][q]['type'] == 'cat2-temporal', 'category 2')]:
+        pos = [q for q in qids if T[bench][q]['routed'] == 'TEMPORAL']; tp = [q for q in pos if truth(q)]; nt = sum(1 for q in qids if truth(q))
+        un = sum(1 for q in qids if T[bench][q]['routed'] == 'UNPARSEABLE'); er = sum(1 for q in qids if T[bench][q]['routed'] == 'ERROR')
+        L.append(f'| {name} | {len(pos)}/{len(qids)} | {pc(len(pos) / len(qids))}% | {tname} (n={nt}) | {len(tp)} | {pc(len(tp) / len(pos)) if pos else "n/a"} | {pc(len(tp) / nt)} | {un} | {er} |')
+    # verdict
+    n14 = [n for n in S if n.startswith('LoCoMo categories 1-4')][0]; nl = [n for n in S if n.startswith('LongMemEval')][0]
+    m1, _, c1 = stat[(n14, 'flux_evidence')]; m2 = stat[(nl, 'flux_evidence')][0]
+    d3 = {c: 100 * (catacc[(TEMP, c)] - catacc[('flux_evidence', c)]) for c in ('cat1-multi-hop', 'cat3-open-domain', 'cat4-single-hop')}
+    b1 = 100 * m1 >= BAR_I - 1e-9 and c1[0] > 0; b2 = 100 * m2 >= BAR_II - 1e-9; b3 = all(v >= BAR_III - 1e-9 for v in d3.values())
+    mh = stat[(n14, 'honcho_chat')][0]
+    L.append('\n**Verdict against the preregistered bars** (all against flux_evidence; exploratory, in-sample: a PASS only justifies an out-of-sample confirmation)\n')
+    L += ['| Bar | Requirement | Observed | Result |', '|---|---|---|---|',
+          f'| (i) LoCoMo categories 1-4 | diff at least +{BAR_I:.1f} pts and the conversation-clustered 95% interval excludes zero | {pm(m1)} pts, clustered {pm(c1[0])} to {pm(c1[1])} | **{"PASS" if b1 else "FAIL"}** |',
+          f'| (ii) LongMemEval-S | diff at least {BAR_II:.1f} pts | {pm(m2)} pts | **{"PASS" if b2 else "FAIL"}** |',
+          f'| (iii) LoCoMo categories 1, 3, 4 | none falls by more than 2.0 pts | cat1 {d3["cat1-multi-hop"]:+.1f}, cat3 {d3["cat3-open-domain"]:+.1f}, cat4 {d3["cat4-single-hop"]:+.1f} pts | **{"PASS" if b3 else "FAIL"}** |',
+          f'| Overall | all three | | **{"PASS" if (b1 and b2 and b3) else "FAIL"}** |']
+    L.append(f'\nGap to honcho_chat on LoCoMo categories 1-4: {pm(mh)} points ({TEMP} minus honcho_chat; conversation-clustered {pm(stat[(n14, "honcho_chat")][2][0])} to {pm(stat[(n14, "honcho_chat")][2][1])}).')
+    # cost
+    L.append('\n**Cost** (USD; router calls are the only new spend; the chosen path\'s reader, judge and, for the flux_reason path, pass-1 costs are the stored ones; shared ingest, extraction and retrieval are not counted)\n')
+    L += ['| Bench | Router | Chosen paths (stored calls) | Arm total | Router failures | Items on the flux_reason path |', '|---|---|---|---|---|---|']
+    led = jl(os.path.join(PUB, 'ledger-flux_temporal.jsonl'))
+    for bench, title in (('lme', 'LongMemEval-S'), ('locomo', 'LoCoMo')):
+        rc = sum(r['router_cost'] for r in T[bench].values()); pcost = sum(r['path_cost'] for r in T[bench].values())
+        L.append(f"| {title} | {rc:.4f} | {pcost:.4f} | {rc + pcost:.4f} | {sum(1 for r in T[bench].values() if r['routed'] == 'ERROR')} | {sum(1 for r in T[bench].values() if r['path'] == 'flux_reason')} |")
+    L.append(f"\nLedger lines for the arm (`results-public/ledger-flux_temporal.jsonl`) sum to {sum(r['usd'] for r in led):.4f} USD against the arm's cap of 3 USD.")
     return '\n'.join(L)
 
 

@@ -55,4 +55,4 @@ The router runs on the main run's host (the DeepSeek key exists only there), fro
 
 ## Changes after prereg
 
-(none yet; filled in after the run)
+None to the arm, prompt, model settings, composition rule, bars, caps or stop rules. After the preregistration commit the analysis code (`analysis/report.py`, `analysis/make_public.py`) and the report section were written; they implement the bars exactly as stated above (bar (i) uses the report's conversation-clustered bootstrap, bar (iii) fails on a difference below -2.0 points). The smoke (10 LoCoMo and 5 LongMemEval questions) showed no harness bug and all outputs parsed; its items were kept as-is in the full run. Spend was 0.0475 USD of the 3 USD cap, with 0 router failures. Results are in REPORT.md, section "Exploratory arm added after the flux_reason arm: flux_temporal".

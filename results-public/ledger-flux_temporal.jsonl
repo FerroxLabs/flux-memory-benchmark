@@ -1,0 +1,4 @@
+{"arm": "flux_temporal", "bench": "locomo", "stage": "router", "ts": 1791076698.898843, "units": 10, "usd": 0.000232}
+{"arm": "flux_temporal", "bench": "lme", "stage": "router", "ts": 1791076701.1810212, "units": 5, "usd": 0.00012}
+{"arm": "flux_temporal", "bench": "lme", "stage": "router", "ts": 1791076743.3228183, "units": 95, "usd": 0.002271}
+{"arm": "flux_temporal", "bench": "locomo", "stage": "router", "ts": 1791077507.2937214, "units": 1976, "usd": 0.044872}

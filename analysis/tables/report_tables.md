@@ -297,3 +297,113 @@ Flux evidence ingest figures reuse cached embeddings from flux_public (seconds a
 | LoCoMo | 0.7715 | 0.5370 | 0.2757 | 1.5842 | 0 | 0 | 0 | 1 |
 
 Arm total 1.7079 USD from the summaries; ledger lines for the arm (`results-public/ledger-flux_reason.jsonl`) sum to 1.7079 USD against the arm's cap of 10 USD. The qa summaries record prompt_sha256 `cb2ed8ffeaf930b7...` (LongMemEval) and `f0ce4540d38d093a...` (LoCoMo), equal to the honcho_chat arm's: yes.
+
+<!-- temporal -->
+**Accuracy** (reference arms are earlier numbers, repeated here for comparison only; this arm is in-sample, see the caution above)
+
+**LongMemEval-S (n=100)**
+
+| Arm | Correct / n | Accuracy % | Wilson 95% | Errors | Empty |
+|---|---|---|---|---|---|
+| flux_temporal | 84/100 | 84.0 | 75.6 to 89.9 | 0 | 1 |
+| flux_evidence | 91/100 | 91.0 | 83.8 to 95.2 | 0 | 1 |
+| flux_public | 84/100 | 84.0 | 75.6 to 89.9 | 0 | 1 |
+| flux_reason | 80/100 | 80.0 | 71.1 to 86.7 | 0 | 0 |
+| honcho_chat | 81/100 | 81.0 | 72.2 to 87.5 | 0 | 0 |
+
+**LoCoMo categories 1-4 (n=1540, preregistered headline)**
+
+| Arm | Correct / n | Accuracy % | Wilson 95% | Errors | Empty |
+|---|---|---|---|---|---|
+| flux_temporal | 1160/1540 | 75.3 | 73.1 to 77.4 | 1 | 2 |
+| flux_evidence | 1085/1540 | 70.5 | 68.1 to 72.7 | 1 | 3 |
+| flux_public | 1088/1540 | 70.6 | 68.3 to 72.9 | 2 | 7 |
+| flux_reason | 1129/1540 | 73.3 | 71.0 to 75.5 | 0 | 1 |
+| honcho_chat | 1291/1540 | 83.8 | 81.9 to 85.6 | 0 | 0 |
+
+**LoCoMo category 5 adversarial (n=446)**
+
+| Arm | Correct / n | Accuracy % | Wilson 95% | Errors | Empty |
+|---|---|---|---|---|---|
+| flux_temporal | 394/446 | 88.3 | 85.0 to 91.0 | 0 | 0 |
+| flux_evidence | 391/446 | 87.7 | 84.3 to 90.4 | 0 | 0 |
+| flux_public | 399/446 | 89.5 | 86.3 to 92.0 | 0 | 0 |
+| flux_reason | 426/446 | 95.5 | 93.2 to 97.1 | 0 | 0 |
+| honcho_chat | 409/446 | 91.7 | 88.8 to 93.9 | 0 | 0 |
+
+**Paired differences.** Difference = flux_temporal minus the other arm, percentage points (positive favours flux_temporal), on identical items. Bootstrap: 10,000 resamples, seed 20261003. Holm is applied across these 4 comparisons within each item set; these tests stand on their own and are not part of the main report's Holm family. flux_temporal is a composition of stored flux_reason and flux_evidence results, so it overlaps both by construction.
+
+**LongMemEval-S (n=100)**
+
+| Other arm | Diff pts | Item bootstrap 95% | flux_temporal only right | Other only right | McNemar p | Holm p |
+|---|---|---|---|---|---|---|
+| flux_evidence | -7.0 | -12.0 to -3.0 | 0 | 7 | 0.01562 | 0.0625 |
+| flux_public | +0.0 | -7.0 to +7.0 | 6 | 6 | 1 | 1 |
+| flux_reason | +4.0 | +1.0 to +8.0 | 4 | 0 | 0.125 | 0.375 |
+| honcho_chat | +3.0 | -5.0 to +11.0 | 10 | 7 | 0.6291 | 1 |
+
+**LoCoMo categories 1-4 (n=1540, preregistered headline)**
+
+| Other arm | Diff pts | Item bootstrap 95% | Conversation-clustered 95% | flux_temporal only right | Other only right | McNemar p | Holm p |
+|---|---|---|---|---|---|---|---|
+| flux_evidence | +4.9 | +3.2 to +6.5 | +2.6 to +7.4 | 121 | 46 | 5.735e-09 | 1.721e-08 |
+| flux_public | +4.7 | +2.7 to +6.6 | +2.3 to +7.2 | 156 | 84 | 3.914e-06 | 7.827e-06 |
+| flux_reason | +2.0 | +0.5 to +3.5 | +0.6 to +3.3 | 86 | 55 | 0.01126 | 0.01126 |
+| honcho_chat | -8.5 | -10.6 to -6.4 | -10.2 to -6.4 | 76 | 207 | 3.47e-15 | 1.388e-14 |
+
+**LoCoMo category 5 adversarial (n=446)**
+
+| Other arm | Diff pts | Item bootstrap 95% | Conversation-clustered 95% | flux_temporal only right | Other only right | McNemar p | Holm p |
+|---|---|---|---|---|---|---|---|
+| flux_evidence | +0.7 | +0.0 to +1.6 | +0.0 to +1.6 | 3 | 0 | 0.25 | 0.5 |
+| flux_public | -1.1 | -3.6 to +1.3 | -3.6 to +1.3 | 13 | 18 | 0.4731 | 0.5 |
+| flux_reason | -7.2 | -9.9 to -4.5 | -8.6 to -5.4 | 5 | 37 | 4.434e-07 | 1.773e-06 |
+| honcho_chat | -3.4 | -6.1 to -0.7 | -5.8 to -0.7 | 13 | 28 | 0.02753 | 0.0826 |
+
+**LoCoMo, per category** (correct/n, accuracy %)
+
+| Arm | cat1-multi-hop (n=282) | cat2-temporal (n=321) | cat3-open-domain (n=96) | cat4-single-hop (n=841) | cat5-adversarial (n=446) |
+|---|---|---|---|---|---|
+| flux_temporal | 151/282 53.5 | 233/321 72.6 | 50/96 52.1 | 726/841 86.3 | 394/446 88.3 |
+| flux_evidence | 153/282 54.3 | 141/321 43.9 | 53/96 55.2 | 738/841 87.8 | 391/446 87.7 |
+| flux_public | 149/282 52.8 | 146/321 45.5 | 56/96 58.3 | 737/841 87.6 | 399/446 89.5 |
+| flux_reason | 158/282 56.0 | 232/321 72.3 | 38/96 39.6 | 701/841 83.4 | 426/446 95.5 |
+| honcho_chat | 203/282 72.0 | 276/321 86.0 | 59/96 61.5 | 753/841 89.5 | 409/446 91.7 |
+
+**LongMemEval-S, per question type** (correct/n, accuracy %; cells of 6 to 27 questions, not tested)
+
+| Arm | knowledge-update (n=15) | multi-session (n=27) | single-session-assistant (n=11) | single-session-preference (n=6) | single-session-user (n=14) | temporal-reasoning (n=27) |
+|---|---|---|---|---|---|---|
+| flux_temporal | 13/15 87 | 18/27 67 | 11/11 100 | 5/6 83 | 14/14 100 | 23/27 85 |
+| flux_evidence | 14/15 93 | 22/27 81 | 11/11 100 | 5/6 83 | 14/14 100 | 25/27 93 |
+| flux_public | 10/15 67 | 18/27 67 | 11/11 100 | 6/6 100 | 14/14 100 | 25/27 93 |
+| flux_reason | 12/15 80 | 17/27 63 | 10/11 91 | 4/6 67 | 14/14 100 | 23/27 85 |
+| honcho_chat | 12/15 80 | 15/27 56 | 11/11 100 | 6/6 100 | 14/14 100 | 23/27 85 |
+
+**Router readouts** (reported only, no bar; the category and type labels were never shown to the router and are used here after the run)
+
+| Item set | Routed TEMPORAL | Share | Truth label | True positives | Precision % | Recall % | Unparseable | Failed calls |
+|---|---|---|---|---|---|---|---|---|
+| LongMemEval-S (n=100) | 51/100 | 51.0% | type temporal-reasoning (n=27) | 27 | 52.9 | 100.0 | 0 | 0 |
+| LoCoMo categories 1-4 | 513/1540 | 33.3% | category 2 (n=321) | 320 | 62.4 | 99.7 | 0 | 0 |
+| LoCoMo all five categories | 585/1986 | 29.5% | category 2 (n=321) | 320 | 54.7 | 99.7 | 0 | 0 |
+
+**Verdict against the preregistered bars** (all against flux_evidence; exploratory, in-sample: a PASS only justifies an out-of-sample confirmation)
+
+| Bar | Requirement | Observed | Result |
+|---|---|---|---|
+| (i) LoCoMo categories 1-4 | diff at least +4.0 pts and the conversation-clustered 95% interval excludes zero | +4.9 pts, clustered +2.6 to +7.4 | **PASS** |
+| (ii) LongMemEval-S | diff at least -2.0 pts | -7.0 pts | **FAIL** |
+| (iii) LoCoMo categories 1, 3, 4 | none falls by more than 2.0 pts | cat1 -0.7, cat3 -3.1, cat4 -1.4 pts | **FAIL** |
+| Overall | all three | | **FAIL** |
+
+Gap to honcho_chat on LoCoMo categories 1-4: -8.5 points (flux_temporal minus honcho_chat; conversation-clustered -10.2 to -6.4).
+
+**Cost** (USD; router calls are the only new spend; the chosen path's reader, judge and, for the flux_reason path, pass-1 costs are the stored ones; shared ingest, extraction and retrieval are not counted)
+
+| Bench | Router | Chosen paths (stored calls) | Arm total | Router failures | Items on the flux_reason path |
+|---|---|---|---|---|---|
+| LongMemEval-S | 0.0024 | 0.1440 | 0.1464 | 0 | 51 |
+| LoCoMo | 0.0451 | 1.8129 | 1.8580 | 0 | 585 |
+
+Ledger lines for the arm (`results-public/ledger-flux_temporal.jsonl`) sum to 0.0475 USD against the arm's cap of 3 USD.

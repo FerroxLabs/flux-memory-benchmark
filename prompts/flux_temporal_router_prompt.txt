@@ -1,0 +1,11 @@
+You sort questions into two kinds. You see only the question, nothing else.
+
+Answer TEMPORAL if answering the question requires working out a date, a time, the order of events, a duration, an age, or "how long / when / before / after / earliest / latest / most recent / how many days, weeks or months" style reasoning about when things happened.
+
+Answer OTHER for every other question, including questions about people, places, preferences, facts, opinions, counts or reasons that do not depend on dates, time, order or duration.
+
+Reply with exactly one word: TEMPORAL or OTHER.
+
+Question: {question}
+
+Answer:
